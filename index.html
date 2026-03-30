@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 SAT ERROR LOG - Your Study Diary</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --header-pink: #F7D6E0;
+            --row-pink-dark: #FFC0CB;
+            --border-pink: #E96D9D;
+            --background: #FFF5F8;
+            --text-color: #4A4A4A;
+            --success-color: #D4EDDA;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: var(--border-pink);
+            margin-bottom: 30px;
+        }
+
+        /* --- FORM NHẬP LIỆU --- */
+        .log-form {
+            background-color: white;
+            border: 2px solid var(--border-pink);
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            box-shadow: 0 4px 15px rgba(233, 109, 157, 0.2);
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-section h3 {
+            border-bottom: 2px solid var(--header-pink);
+            color: var(--border-pink);
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            color: var(--border-pink);
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            border: 1px solid var(--header-pink);
+            border-radius: 8px;
+            padding: 12px;
+            background-color: #FFF;
+            transition: 0.3s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--border-pink);
+            box-shadow: 0 0 5px rgba(233, 109, 157, 0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        .submit-btn {
+            grid-column: span 2;
+            background-color: var(--border-pink);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #D15A8B;
+            transform: translateY(-2px);
+        }
+
+        #successMessage {
+            grid-column: span 2;
+            background-color: var(--success-color);
+            border: 1px solid #C3E6CB;
+            color: #155724;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        /* --- BẢNG LỊCH SỬ LOG --- */
+        .log-history {
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: white;
+            border: 2px solid var(--border-pink);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(233, 109, 157, 0.2);
+        }
+
+        th {
+            background-color: var(--header-pink);
+            color: var(--border-pink);
+            text-align: center;
+            padding: 15px;
+            font-size: 0.85em;
+            border-bottom: 2px solid var(--border-pink);
+        }
+
+        th.opt-header {
+            background-color: var(--row-pink-dark);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #FFEBEF;
+            font-size: 0.8em;
+            text-align: left;
+            vertical-align: top;
+            max-width: 150px;
+            white-space: wrap;
+        }
+
+        tr:nth-child(even) {
+            background-color: #FFF5F9;
+        }
+
+        tr:hover td {
+            background-color: #FFEDF4;
+        }
+
+        /* --- CUSTOM DROPDOWN CSS --- */
+        .custom-dropdown {
+            position: flex;
+            width: 100%;
+            user-select: none;
+        }
+
+        .dropdown-selected {
+            border: 1px solid var(--header-pink);
+            border-radius: 8px;
+            padding: 12px;
+            background-color: #FFF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            min-height: 20px;
+        }
+
+        .dropdown-options {
+            display: none;
+            position: absolute;
+            background-color: #FFF;
+            border: 1px solid var(--header-pink);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            width: 100%;
+            z-index: 99;
+            margin-top: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .dropdown-options.show {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .dropdown-item, .selected-tag {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .dropdown-item:hover {
+            opacity: 0.8;
+        }
+
+        .tag-wic { background-color: #FCE8E6; color: #C5221F; }
+        .tag-tsp { background-color: #FEF3EB; color: #D56E0C; }
+        .tag-ctc { background-color: #FFF8E1; color: #F29900; }
+        .tag-cid { background-color: #E6F4EA; color: #137333; }
+        .tag-inf { background-color: #E8F0FE; color: #1967D2; }
+        .tag-coe { background-color: #E2F0EC; color: #007B83; }
+        .tag-tra { background-color: #F3E8FD; color: #8430CE; }
+        .tag-rhs { background-color: #4C3A27; color: #EFE4D6; }
+        .tag-sec { background-color: #7A3F00; color: #FFFFFF; }
+    </style>
+</head>
+<body>
+
+    <h1>🌸 SAT ERROR LOG</h1>
+
+    <form class="log-form" id="logForm">
+        <div id="successMessage">🎉 Logged successfully! Add another?</div>
+        
+        <div class="form-section">
+            <h3>Question Details</h3>
+            
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="date_done" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Source/Link</label>
+                <input type="text" id="source_link" placeholder="e.g., Khan Academy">
+            </div>
+
+            <div class="form-group">
+                <label>Question Type</label>
+                <input type="hidden" id="question_type" required>
+                
+                <div class="custom-dropdown" id="customDropdown">
+                    <div class="dropdown-selected" id="dropdownSelected">
+                        <span>Select type...</span>
+                    </div>
+                    <div class="dropdown-options" id="dropdownOptions">
+                        <div class="dropdown-item tag-wic" data-value="Words in Context">Words in Context</div>
+                        <div class="dropdown-item tag-tsp" data-value="Text Structure & Purpose">Text Structure & Purpose</div>
+                        <div class="dropdown-item tag-ctc" data-value="Cross-Text Connections">Cross-Text Connections</div>
+                        <div class="dropdown-item tag-cid" data-value="Central Ideas & Details">Central Ideas & Details</div>
+                        <div class="dropdown-item tag-inf" data-value="Inferences">Inferences</div>
+                        <div class="dropdown-item tag-coe" data-value="Command of Evidence">Command of Evidence</div>
+                        <div class="dropdown-item tag-tra" data-value="Transitions">Transitions</div>
+                        <div class="dropdown-item tag-rhs" data-value="Rhetorical Synthesis">Rhetorical Synthesis</div>
+                        <div class="dropdown-item tag-sec" data-value="Standard English Conv.">Standard English Conv.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Câu hỏi</label>
+                <textarea id="question_text" placeholder="Gõ hoặc paste câu hỏi vào đây..." required></textarea>
+            </div>
+
+            <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="text" id="option_a" placeholder="Option A" required>
+                <input type="text" id="option_b" placeholder="Option B" required>
+                <input type="text" id="option_c" placeholder="Option C" required>
+                <input type="text" id="option_d" placeholder="Option D" required>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Deep Analysis (Why you failed)</h3>
+            
+            <div class="form-group">
+                <label>Đáp án chọn sai (Sai lầm cụ thể)</label>
+                <input type="text" id="wrong_answer" placeholder="e.g., Chọn A" required>
+            </div>
+
+            <div class="form-group">
+                <label>Tại sao tui lại chọn đáp án này? (Logic cũ)</label>
+                <textarea id="why_i_chose_wrong" placeholder="Bắt bài tư duy sai lầm của bà..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Tại sao nó SAI? (Hổng kiến thức/Bẫy)</label>
+                <textarea id="why_wrong" placeholder="Vạch trần cái bẫy của đề..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Đáp án đúng (Sự thật là...)</label>
+                <input type="text" id="correct_answer" placeholder="e.g., B" required>
+            </div>
+
+            <div class="form-group">
+                <label>Takeaway/Rule (Bài học xương máu)</label>
+                <textarea id="takeaway" placeholder="Rút ra công thức hoặc từ vựng mới..." style="height: 150px;"></textarea>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">LOG IT! 🌸</button>
+    </form>
+
+    <div class="log-history">
+        <h2 style="color: var(--border-pink); text-align: center;">YOUR HISTORY LOG</h2>
+        <div style="overflow-x: auto;">
+            <table id="logTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Question</th>
+                        <th class="opt-header">A</th>
+                        <th class="opt-header">B</th>
+                        <th class="opt-header">C</th>
+                        <th class="opt-header">D</th>
+                        <th>Why I chose wrong</th>
+                        <th>Why it's wrong</th>
+                        <th>Takeaway</th>
+                    </tr>
+                </thead>
+                <tbody id="logTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+<script>
+        // --- 1. LOGIC CHO CUSTOM DROPDOWN (CHẠY TRƯỚC CHO MƯỢT) ---
+        const dropdownSelected = document.getElementById('dropdownSelected');
+        const dropdownOptions = document.getElementById('dropdownOptions');
+        const hiddenInput = document.getElementById('question_type');
+
+        // Bấm vào thì hiện list
+        dropdownSelected.addEventListener('click', function(e) {
+            dropdownOptions.classList.toggle('show');
+            e.stopPropagation();
+        });
+
+        // Bấm vào từng option thì đổi màu + gán giá trị
+        const items = document.querySelectorAll('.dropdown-item');
+        items.forEach(item => {
+            item.addEventListener('click', function() {
+                hiddenInput.value = this.getAttribute('data-value');
+                
+                dropdownSelected.innerHTML = '';
+                const clonedNode = this.cloneNode(true);
+                clonedNode.classList.remove('dropdown-item');
+                clonedNode.classList.add('selected-tag');
+                dropdownSelected.appendChild(clonedNode);
+                
+                dropdownOptions.classList.remove('show');
+            });
+        });
+
+        // Bấm ra ngoài web thì tự đóng list
+        document.addEventListener('click', function(e) {
+            if (!dropdownSelected.contains(e.target) && !dropdownOptions.contains(e.target)) {
+                dropdownOptions.classList.remove('show');
+            }
+        });
+
+        // --- 2. PHẦN KẾT NỐI DATABASE (CHẠY SAU) ---
+        const SUPABASE_URL = 'https://okkyzqgqyzcwnaccelnj.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ra3l6cWdxeXpjd25hY2NlbG5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4ODIyNTksImV4cCI6MjA5MDQ1ODI1OX0.ncrE4WgXdXlq8zPBstmnxKMkAqy-gdxkgSq0t9oGLxU';
+
+        // Đã đổi tên biến thành 'supabaseClient' để không bị đụng hàng
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const form = document.getElementById('logForm');
+        const successMessage = document.getElementById('successMessage');
+        const submitBtn = document.getElementById('submitBtn');
+        const tableBody = document.getElementById('logTableBody');
+
+        async function fetchLogs() {
+            tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">🌸 Fetching your logs...</td></tr>';
+            
+            const { data, error } = await supabaseClient
+                .from('logs')
+                .select('*')
+                .order('date_done', { ascending: false });
+
+            if (error) {
+                console.error('Error fetching logs:', error);
+                tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center; color: red;">Failed to fetch logs.</td></tr>';
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">Your log is empty. Study more! 🌸</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = '';
+            data.forEach(log => {
+                const row = `
+                    <tr>
+                        <td>${log.date_done || ''}</td>
+                        <td>${log.question_type || ''}</td>
+                        <td style="font-weight: bold;">${log.question_text || ''}</td>
+                        <td>${log.option_a || ''}</td>
+                        <td>${log.option_b || ''}</td>
+                        <td>${log.option_c || ''}</td>
+                        <td>${log.option_d || ''}</td>
+                        <td style="color: red;">${log.why_i_chose_wrong || ''}</td>
+                        <td style="color: blue; font-style: italic;">${log.why_wrong || ''}</td>
+                        <td style="background-color: var(--success-color); color: #155724;">${log.takeaway || ''}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        fetchLogs();
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Logging... 🌸';
+            successMessage.style.display = 'none';
+
+            const logData = {
+                date_done: document.getElementById('date_done').value,
+                source_link: document.getElementById('source_link').value,
+                question_type: document.getElementById('question_type').value,
+                question_text: document.getElementById('question_text').value,
+                option_a: document.getElementById('option_a').value,
+                option_b: document.getElementById('option_b').value,
+                option_c: document.getElementById('option_c').value,
+                option_d: document.getElementById('option_d').value,
+                wrong_answer: document.getElementById('wrong_answer').value,
+                why_i_chose_wrong: document.getElementById('why_i_chose_wrong').value,
+                why_wrong: document.getElementById('why_wrong').value,
+                correct_answer: document.getElementById('correct_answer').value,
+                takeaway: document.getElementById('takeaway').value,
+                review_status: 'Not Started'
+            };
+
+            const { error } = await supabaseClient
+                .from('logs')
+                .insert([logData]);
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'LOG IT! 🌸';
+
+            if (error) {
+                console.error('Error logging:', error);
+                alert('Oops, something went wrong. Check the console.');
+            } else {
+                form.reset(); 
+                document.getElementById('dropdownSelected').innerHTML = '<span>Select type...</span>';
+                document.getElementById('question_type').value = '';
+                successMessage.style.display = 'block';
+                fetchLogs();
+            }
+        });
+    </script>
+</body>
+</html>
