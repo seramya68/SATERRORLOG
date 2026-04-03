@@ -20,7 +20,7 @@
         .mode-btn { padding: 12px 25px; border: 2px solid var(--border-pink); background-color: white; color: var(--border-pink); border-radius: 30px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .mode-btn.active { background-color: var(--border-pink); color: white; box-shadow: 0 4px 10px rgba(233, 109, 157, 0.4); }
 
-        .app-section { display: none; width: 100%; max-width: 1200px; } /* Mở rộng tối đa cho bảng log */
+        .app-section { display: none; width: 100%; max-width: 1300px; } /* Mở rộng tối đa cho bảng log rộng rãi */
         .app-section.active { display: block; }
 
         /* --- FORM NHẬP LIỆU --- */
@@ -33,32 +33,44 @@
         .form-section h3 { border-bottom: 2px solid var(--header-pink); color: var(--border-pink); padding-bottom: 5px; margin-top: 0; }
         .form-group { display: flex; flex-direction: column; }
         label { font-weight: bold; font-size: 0.9em; margin-bottom: 5px; color: var(--border-pink); }
-        input[type="text"], input[type="date"], input[type="number"], textarea, select { border: 1px solid var(--header-pink); border-radius: 8px; padding: 12px; background-color: #FFF; transition: 0.3s; }
+        input[type="text"], input[type="date"], input[type="number"], textarea, select { border: 1px solid var(--header-pink); border-radius: 8px; padding: 12px; background-color: #FFF; transition: 0.3s; line-height: 1.5; }
         input:focus, textarea:focus, select:focus { outline: none; border-color: var(--border-pink); box-shadow: 0 0 5px rgba(233, 109, 157, 0.3); }
         textarea { resize: vertical; height: 100px; }
         .submit-btn { grid-column: span 2; background-color: var(--border-pink); color: white; border: none; border-radius: 8px; padding: 15px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .submit-btn:hover { background-color: #D15A8B; transform: translateY(-2px); }
         #successMessage { grid-column: span 2; background-color: var(--success-color); border: 1px solid #C3E6CB; color: #155724; padding: 10px; border-radius: 8px; text-align: center; display: none; }
 
-        /* --- BẢNG LỊCH SỬ LOG SIÊU TO KHỔNG LỒ --- */
+        /* --- BẢNG LỊCH SỬ LOG SIÊU TO KHỔNG LỒ (ĐÃ FIX VISUAL) --- */
         .log-history { width: 100%; margin-top: 40px; }
         .table-responsive { width: 100%; overflow-x: auto; border-radius: 12px; border: 2px solid var(--border-pink); box-shadow: 0 4px 15px rgba(233, 109, 157, 0.2); background-color: white;}
-        table { width: 100%; min-width: 1500px; border-collapse: collapse; }
-        th { background-color: var(--header-pink); color: var(--border-pink); text-align: center; padding: 12px; font-size: 0.85em; border-bottom: 2px solid var(--border-pink); position: sticky; top: 0; z-index: 10;}
-        td { padding: 12px; border-bottom: 1px solid #FFEBEF; font-size: 0.85em; text-align: left; vertical-align: top; white-space: pre-wrap; word-break: break-word; }
+        table { width: 100%; min-width: 1600px; border-collapse: collapse; }
+        th { background-color: var(--header-pink); color: var(--border-pink); text-align: center; padding: 15px; font-size: 0.9em; border-bottom: 2px solid var(--border-pink); position: sticky; top: 0; z-index: 10;}
+        td { padding: 15px 12px; border-bottom: 1px solid #FFEBEF; font-size: 0.85em; text-align: left; vertical-align: top; word-break: break-word; line-height: 1.6; }
         tr:nth-child(even) { background-color: #FFF5F9; }
         tr:hover td { background-color: #FFEDF4; }
-        .col-question { min-width: 250px; }
-        .col-options { min-width: 150px; }
-        .col-explain { min-width: 200px; }
+        
+        /* Chỉnh lại độ rộng cột cho đẹp */
+        .col-status { width: 100px; text-align: center; }
+        .col-date { width: 90px; white-space: nowrap; }
+        .col-type { width: 180px; text-align: center; }
+        .col-question { min-width: 300px; }
+        .col-options { min-width: 200px; }
+        .col-ans { width: 70px; text-align: center; font-weight: bold; }
+        .col-explain { min-width: 220px; }
 
-        /* --- CUSTOM DROPDOWN --- */
+        /* --- CUSTOM DROPDOWN & TAGS (ĐÃ FIX CẤM RỚT DÒNG) --- */
         .custom-dropdown { position: relative; width: 100%; user-select: none; }
         .dropdown-selected { border: 1px solid var(--header-pink); border-radius: 8px; padding: 12px; background-color: #FFF; cursor: pointer; display: flex; align-items: center; min-height: 20px; }
         .dropdown-options { display: none; position: absolute; background-color: #FFF; border: 1px solid var(--header-pink); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; width: 100%; z-index: 99; margin-top: 5px; padding: 10px; box-sizing: border-box; }
         .dropdown-options.show { display: flex; flex-direction: column; gap: 8px; }
-        .dropdown-item, .selected-tag { padding: 6px 12px; border-radius: 20px; font-size: 0.9em; font-weight: 500; cursor: pointer; display: inline-block; width: fit-content; text-align: center; }
+        
+        .dropdown-item, .selected-tag { 
+            padding: 6px 12px; border-radius: 20px; font-size: 0.9em; font-weight: 500; cursor: pointer; 
+            display: inline-block; text-align: center;
+            white-space: nowrap; /* ĐÂY LÀ PHÉP MÀU CHỐNG RỚT DÒNG */
+        }
         .dropdown-item:hover { opacity: 0.8; }
+        
         .tag-cid { background-color: #E6F4EA; color: #137333; border: 1px solid #137333;}
         .tag-coe { background-color: #E2F0EC; color: #007B83; border: 1px solid #007B83;}
         .tag-inf { background-color: #E8F0FE; color: #1967D2; border: 1px solid #1967D2;}
@@ -70,6 +82,8 @@
         .tag-tra { background-color: #F3E8FD; color: #8430CE; border: 1px solid #8430CE;}
         .tag-rhs { background-color: #4C3A27; color: #EFE4D6; border: 1px solid #EFE4D6;}
 
+        .status-badge { padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 0.85em; text-align: center; display: inline-block; white-space: nowrap;}
+
         /* --- TEST MODE CSS & BLUEBOOK FEATURES --- */
         .test-setup-card, .quiz-card { background-color: white; border: 2px solid var(--border-pink); border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(233, 109, 157, 0.2); text-align: center; position: relative; max-width: 900px; margin: 0 auto; }
         .quiz-card { display: none; text-align: left; }
@@ -80,20 +94,19 @@
         .quiz-question-text { font-size: 1.2em; font-weight: 500; margin-bottom: 25px; line-height: 1.6; white-space: pre-wrap; padding: 15px; border-left: 4px solid var(--bluebook-blue); background-color: #f9fbfd; }
         .highlighted { background-color: var(--highlight-yellow); }
         .quiz-options { display: flex; flex-direction: column; gap: 12px; }
-        .quiz-option-btn { background-color: #FFF; border: 2px solid #ddd; border-radius: 8px; padding: 15px; font-size: 1em; text-align: left; cursor: pointer; transition: 0.2s; position: relative; }
+        .quiz-option-btn { background-color: #FFF; border: 2px solid #ddd; border-radius: 8px; padding: 15px; font-size: 1em; text-align: left; cursor: pointer; transition: 0.2s; position: relative; line-height: 1.5;}
         .quiz-option-btn:hover:not(:disabled) { border-color: var(--bluebook-blue); }
         .quiz-option-btn.eliminated { text-decoration: line-through; opacity: 0.5; background-color: #f5f5f5; border-color: #eee;}
         .quiz-option-btn.correct { background-color: var(--success-color); border-color: #28a745; color: #155724; font-weight: bold;}
         .quiz-option-btn.wrong { background-color: var(--error-color); border-color: #dc3545; color: #721c24; opacity: 0.8; }
-        .quiz-explanation { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; }
+        .quiz-explanation { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; line-height: 1.6;}
         .exp-correct-mode { background-color: #E8F5E9; border-left: 5px solid #28a745; }
         .exp-wrong-mode { background-color: #FFF5F9; border-left: 5px solid #dc3545; }
         .quiz-explanation h4 { margin-top: 0; }
         .next-btn { margin-top: 20px; background-color: var(--bluebook-blue); color: white; border: none; border-radius: 8px; padding: 12px 25px; font-size: 1.1em; font-weight: bold; cursor: pointer; float: right; display: none; }
         .next-btn:hover { background-color: #004070; }
-        #scratchpad { display: none; width: 100%; height: 100px; margin-bottom: 20px; border: 2px dashed #ccc; border-radius: 8px; padding: 10px; background: #fffcf0; box-sizing: border-box; }
+        #scratchpad { display: none; width: 100%; height: 100px; margin-bottom: 20px; border: 2px dashed #ccc; border-radius: 8px; padding: 10px; background: #fffcf0; box-sizing: border-box; font-family: inherit;}
         
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85em; text-align: center; display: inline-block; white-space: nowrap;}
     </style>
 </head>
 <body>
@@ -161,13 +174,13 @@
                 <table id="logTable">
                     <thead>
                         <tr>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Type</th>
+                            <th class="col-status">Status</th>
+                            <th class="col-date">Date</th>
+                            <th class="col-type">Type</th>
                             <th class="col-question">Question</th>
-                            <th class="col-options">Options (A, B, C, D)</th>
-                            <th>My Ans</th>
-                            <th>Key</th>
+                            <th class="col-options">Options</th>
+                            <th class="col-ans">My Ans</th>
+                            <th class="col-ans">Key</th>
                             <th class="col-explain">Why Correct?</th>
                             <th class="col-explain">Why Wrong?</th>
                             <th class="col-explain">Takeaway</th>
@@ -270,7 +283,7 @@
             if (!dropdownSelected.contains(e.target) && !dropdownOptions.contains(e.target)) dropdownOptions.classList.remove('show');
         });
 
-        // Supabase
+        // Supabase - LOGIC KẾT NỐI KHÔNG THAY ĐỔI
         const SUPABASE_URL = 'https://okkyzqgqyzcwnaccelnj.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ra3l6cWdxeXpjd25hY2NlbG5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4ODIyNTksImV4cCI6MjA5MDQ1ODI1OX0.ncrE4WgXdXlq8zPBstmnxKMkAqy-gdxkgSq0t9oGLxU';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -288,30 +301,29 @@
 
         const tableBody = document.getElementById('logTableBody');
         async function fetchLogs() {
-            tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 20px;">🌸 Đang tải...</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 30px; font-weight: bold; color: var(--border-pink);">🌸 Đang tải dữ liệu...</td></tr>';
             const { data, error } = await supabaseClient.from('logs').select('*').order('date_done', { ascending: false });
-            if (error || !data || data.length === 0) { tableBody.innerHTML = '<tr><td colspan="10" style="text-align:center;">Chưa có dữ liệu.</td></tr>'; return; }
+            if (error || !data || data.length === 0) { tableBody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding: 30px;">Chưa có câu nào. Log thêm lỗi đi bà!</td></tr>'; return; }
             
             tableBody.innerHTML = '';
             data.forEach(log => {
-                // Xử lý huy hiệu Status
                 let statusBadge = `<span class="status-badge" style="background:#eee; color:#666;">Chưa ôn</span>`;
                 if(log.review_status === "Đã ôn - Đúng") statusBadge = `<span class="status-badge" style="background:#D4EDDA; color:#155724;">✅ Đã ôn (Đúng)</span>`;
                 if(log.review_status === "Đã ôn - Sai") statusBadge = `<span class="status-badge" style="background:#F8D7DA; color:#721c24;">❌ Đã ôn (Sai)</span>`;
 
                 tableBody.innerHTML += `<tr>
-                    <td style="text-align: center;">${statusBadge}</td>
-                    <td>${log.date_done || ''}</td>
-                    <td><span class="selected-tag ${getTagClass(log.question_type)}" style="font-size: 0.75em;">${log.question_type || ''}</span></td>
+                    <td class="col-status">${statusBadge}</td>
+                    <td class="col-date">${log.date_done || ''}</td>
+                    <td class="col-type"><span class="selected-tag ${getTagClass(log.question_type)}">${log.question_type || ''}</span></td>
                     <td class="col-question"><strong>${log.question_text || ''}</strong></td>
                     <td class="col-options">
-                        <strong>A:</strong> ${log.option_a || ''}<br>
-                        <strong>B:</strong> ${log.option_b || ''}<br>
-                        <strong>C:</strong> ${log.option_c || ''}<br>
-                        <strong>D:</strong> ${log.option_d || ''}
+                        <div style="margin-bottom: 5px;"><strong>A:</strong> ${log.option_a || ''}</div>
+                        <div style="margin-bottom: 5px;"><strong>B:</strong> ${log.option_b || ''}</div>
+                        <div style="margin-bottom: 5px;"><strong>C:</strong> ${log.option_c || ''}</div>
+                        <div><strong>D:</strong> ${log.option_d || ''}</div>
                     </td>
-                    <td style="color: #dc3545; font-weight: bold; text-align:center;">${log.wrong_answer || ''}</td>
-                    <td style="color: #28a745; font-weight: bold; text-align:center;">${log.correct_answer || ''}</td>
+                    <td class="col-ans" style="color: #dc3545;">${log.wrong_answer || ''}</td>
+                    <td class="col-ans" style="color: #28a745;">${log.correct_answer || ''}</td>
                     <td class="col-explain" style="color: #28a745; background-color: #f9fff9;">${log.why_correct || ''}</td>
                     <td class="col-explain" style="color: #dc3545; background-color: #fffafb;">${log.why_wrong || ''}</td>
                     <td class="col-explain" style="background-color: #fcf8fa; font-weight: 500;">${log.takeaway || ''}</td>
@@ -331,7 +343,7 @@
                 wrong_answer: document.getElementById('wrong_answer').value, why_i_chose_wrong: document.getElementById('why_i_chose_wrong').value,
                 why_wrong: document.getElementById('why_wrong').value, correct_answer: document.getElementById('correct_answer').value.toUpperCase(),
                 why_correct: document.getElementById('why_correct').value, takeaway: document.getElementById('takeaway').value, 
-                review_status: 'Chưa ôn' // Mặc định khi mới tạo
+                review_status: 'Chưa ôn'
             };
             const { error } = await supabaseClient.from('logs').insert([logData]);
             btn.disabled = false; btn.textContent = 'LOG IT! 🌸';
@@ -416,7 +428,7 @@
             const expDiv = document.getElementById('quizExplanation');
             expDiv.className = 'quiz-explanation'; 
             
-            let newStatus = ""; // Biến để lưu trạng thái đẩy lên Database
+            let newStatus = ""; 
 
             if (selectedOption === correctOption) {
                 selectedBtn.classList.add('correct');
@@ -446,8 +458,6 @@
 
             expDiv.style.display = 'block';
 
-            // --- BẮN LỆNH CẬP NHẬT TRẠNG THÁI LÊN SUPABASE ---
-            // Tận dụng id có sẵn của câu hỏi để cập nhật chính xác dòng đó
             if (q.id) {
                 await supabaseClient.from('logs').update({ review_status: newStatus }).eq('id', q.id);
             }
@@ -464,7 +474,7 @@
             } else {
                 alert("🎉 Vỗ tay vỗ tay! Bà làm xong rồi đó. Lỗi nào sai thì nhớ nằm lòng nha!");
                 document.getElementById('testSetupCard').style.display = 'block'; document.getElementById('quizCard').style.display = 'none';
-                fetchLogs(); // Load lại bảng Log để thấy Status mới cập nhật
+                fetchLogs(); 
             }
         }
     </script>
