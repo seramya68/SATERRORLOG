@@ -56,7 +56,7 @@
         .app-section { display: none; width: 100%; max-width: 900px; }
         .app-section.active { display: block; }
 
-        /* --- FORM NHẬP LIỆU (Giữ nguyên style cũ) --- */
+        /* --- FORM NHẬP LIỆU --- */
         .log-form {
             background-color: white; border: 2px solid var(--border-pink);
             border-radius: 12px; padding: 30px;
@@ -96,16 +96,17 @@
         .dropdown-item, .selected-tag { padding: 6px 12px; border-radius: 20px; font-size: 0.9em; font-weight: 500; cursor: pointer; display: inline-block; width: fit-content; }
         .dropdown-item:hover { opacity: 0.8; }
 
-        /* Bảng màu Tag */
-        .tag-wic { background-color: #FCE8E6; color: #C5221F; }
-        .tag-tsp { background-color: #FEF3EB; color: #D56E0C; }
-        .tag-ctc { background-color: #FFF8E1; color: #F29900; }
-        .tag-cid { background-color: #E6F4EA; color: #137333; }
-        .tag-inf { background-color: #E8F0FE; color: #1967D2; }
-        .tag-coe { background-color: #E2F0EC; color: #007B83; }
-        .tag-tra { background-color: #F3E8FD; color: #8430CE; }
-        .tag-rhs { background-color: #4C3A27; color: #EFE4D6; }
-        .tag-sec { background-color: #7A3F00; color: #FFFFFF; }
+        /* Bảng màu Tag Full 10 Loại SAT */
+        .tag-cid { background-color: #E6F4EA; color: #137333; } /* Central Ideas - Xanh lá */
+        .tag-coe { background-color: #E2F0EC; color: #007B83; } /* Command of Evidence - Xanh mòng két */
+        .tag-inf { background-color: #E8F0FE; color: #1967D2; } /* Inferences - Xanh dương */
+        .tag-wic { background-color: #FCE8E6; color: #C5221F; } /* Words in Context - Đỏ */
+        .tag-tsp { background-color: #FEF3EB; color: #D56E0C; } /* Text Structure - Cam */
+        .tag-ctc { background-color: #FFF8E1; color: #F29900; } /* Cross-Text - Vàng */
+        .tag-bnd { background-color: #FDE7F3; color: #C2185B; } /* Boundaries - Hồng ngọc */
+        .tag-fss { background-color: #F4EBFE; color: #6200EA; } /* Form, Structure - Tím đậm */
+        .tag-tra { background-color: #F3E8FD; color: #8430CE; } /* Transitions - Tím nhạt */
+        .tag-rhs { background-color: #4C3A27; color: #EFE4D6; } /* Rhetorical Synthesis - Nâu */
 
         /* --- TEST MODE CSS --- */
         .test-setup-card, .quiz-card {
@@ -125,11 +126,9 @@
         }
         .quiz-option-btn:hover:not(:disabled) { border-color: var(--border-pink); background-color: var(--background); }
         
-        /* Trạng thái đúng/sai khi click */
         .quiz-option-btn.correct { background-color: var(--success-color); border-color: #28a745; color: #155724; }
         .quiz-option-btn.wrong { background-color: var(--error-color); border-color: #dc3545; color: #721c24; opacity: 0.8; }
         
-        /* Phần giải thích hiện ra sau khi chọn */
         .quiz-explanation {
             margin-top: 25px; padding: 20px; border-radius: 8px; background-color: #FFF5F9;
             border-left: 5px solid var(--border-pink); display: none;
@@ -171,15 +170,16 @@
                     <div class="custom-dropdown" id="customDropdown">
                         <div class="dropdown-selected" id="dropdownSelected"><span>Select type...</span></div>
                         <div class="dropdown-options" id="dropdownOptions">
-                            <div class="dropdown-item tag-wic" data-value="Words in Context">Words in Context</div>
-                            <div class="dropdown-item tag-tsp" data-value="Text Structure & Purpose">Text Structure & Purpose</div>
-                            <div class="dropdown-item tag-ctc" data-value="Cross-Text Connections">Cross-Text Connections</div>
-                            <div class="dropdown-item tag-cid" data-value="Central Ideas & Details">Central Ideas & Details</div>
-                            <div class="dropdown-item tag-inf" data-value="Inferences">Inferences</div>
+                            <div class="dropdown-item tag-cid" data-value="Central Ideas and Details">Central Ideas and Details</div>
                             <div class="dropdown-item tag-coe" data-value="Command of Evidence">Command of Evidence</div>
+                            <div class="dropdown-item tag-inf" data-value="Inferences">Inferences</div>
+                            <div class="dropdown-item tag-wic" data-value="Words in Context">Words in Context</div>
+                            <div class="dropdown-item tag-tsp" data-value="Text Structure and Purpose">Text Structure and Purpose</div>
+                            <div class="dropdown-item tag-ctc" data-value="Cross-Text Connections">Cross-Text Connections</div>
+                            <div class="dropdown-item tag-bnd" data-value="Boundaries">Boundaries</div>
+                            <div class="dropdown-item tag-fss" data-value="Form, Structure, and Sense">Form, Structure, and Sense</div>
                             <div class="dropdown-item tag-tra" data-value="Transitions">Transitions</div>
                             <div class="dropdown-item tag-rhs" data-value="Rhetorical Synthesis">Rhetorical Synthesis</div>
-                            <div class="dropdown-item tag-sec" data-value="Standard English Conv.">Standard English Conv.</div>
                         </div>
                     </div>
                 </div>
@@ -241,15 +241,16 @@
                 <label>Chọn Dạng Bài (Category)</label>
                 <select id="testCategoryFilter">
                     <option value="ALL">Random Tất Cả (Mix)</option>
-                    <option value="Words in Context">Words in Context</option>
-                    <option value="Text Structure & Purpose">Text Structure & Purpose</option>
-                    <option value="Cross-Text Connections">Cross-Text Connections</option>
-                    <option value="Central Ideas & Details">Central Ideas & Details</option>
-                    <option value="Inferences">Inferences</option>
+                    <option value="Central Ideas and Details">Central Ideas and Details</option>
                     <option value="Command of Evidence">Command of Evidence</option>
+                    <option value="Inferences">Inferences</option>
+                    <option value="Words in Context">Words in Context</option>
+                    <option value="Text Structure and Purpose">Text Structure and Purpose</option>
+                    <option value="Cross-Text Connections">Cross-Text Connections</option>
+                    <option value="Boundaries">Boundaries</option>
+                    <option value="Form, Structure, and Sense">Form, Structure, and Sense</option>
                     <option value="Transitions">Transitions</option>
                     <option value="Rhetorical Synthesis">Rhetorical Synthesis</option>
-                    <option value="Standard English Conv.">Standard English Conv.</option>
                 </select>
             </div>
 
@@ -321,7 +322,7 @@
         });
 
         // =====================================
-        // KẾT NỐI SUPABASE (BÀ NHỚ DÁN KEY VÀO ĐÂY NHA!)
+        // KẾT NỐI SUPABASE
         // =====================================
         const SUPABASE_URL = 'https://okkyzqgqyzcwnaccelnj.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ra3l6cWdxeXpjd25hY2NlbG5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4ODIyNTksImV4cCI6MjA5MDQ1ODI1OX0.ncrE4WgXdXlq8zPBstmnxKMkAqy-gdxkgSq0t9oGLxU';
@@ -348,7 +349,7 @@
             }
         }
 
-        // --- FETCH DỮ LIỆU ĐỔ VÀO BẢNG LOG (Cũ) ---
+        // --- FETCH DỮ LIỆU ĐỔ VÀO BẢNG LOG ---
         const tableBody = document.getElementById('logTableBody');
         async function fetchLogs() {
             tableBody.innerHTML = '<tr><td colspan="9" style="text-align: center;">🌸 Đang tải...</td></tr>';
@@ -372,7 +373,7 @@
         }
         fetchLogs(); // Load lúc đầu
 
-        // --- XỬ LÝ GỬI FORM (Cũ) ---
+        // --- XỬ LÝ GỬI FORM ---
         document.getElementById('logForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
@@ -402,7 +403,7 @@
         });
 
         // =====================================
-        // LOGIC TEST MODE MỚI THÊM VÀO
+        // LOGIC TEST MODE
         // =====================================
         let currentQuizList = [];
         let currentQuestionIndex = 0;
@@ -430,12 +431,12 @@
                 return;
             }
 
-            // Thuật toán xáo trộn (Shuffle) mảng để lấy random
+            // Thuật toán xáo trộn (Shuffle)
             const shuffled = data.sort(() => 0.5 - Math.random());
-            currentQuizList = shuffled.slice(0, limit); // Lấy đủ số lượng bà yêu cầu
+            currentQuizList = shuffled.slice(0, limit);
             currentQuestionIndex = 0;
 
-            // Chuyển UI sang màn hình Quiz
+            // Chuyển UI
             document.getElementById('testSetupCard').style.display = 'none';
             document.getElementById('quizCard').style.display = 'block';
             
@@ -445,7 +446,6 @@
         function loadQuizQuestion() {
             const q = currentQuizList[currentQuestionIndex];
             
-            // Reset UI
             document.getElementById('quizExplanation').style.display = 'none';
             document.getElementById('btnNextQuiz').style.display = 'none';
             
@@ -455,11 +455,24 @@
                 btn.disabled = false;
             });
 
-            // Đổ dữ liệu
             document.getElementById('quizProgress').textContent = `Câu ${currentQuestionIndex + 1} / ${currentQuizList.length}`;
             document.getElementById('quizCategoryTag').textContent = q.question_type;
-            document.getElementById('quizQuestionText').textContent = q.question_text;
             
+            // Cập nhật lại màu tag cho chuẩn với category hiện tại
+            let tagClass = "tag-wic"; // Default
+            if(q.question_type === "Central Ideas and Details") tagClass = "tag-cid";
+            if(q.question_type === "Command of Evidence") tagClass = "tag-coe";
+            if(q.question_type === "Inferences") tagClass = "tag-inf";
+            if(q.question_type === "Text Structure and Purpose") tagClass = "tag-tsp";
+            if(q.question_type === "Cross-Text Connections") tagClass = "tag-ctc";
+            if(q.question_type === "Boundaries") tagClass = "tag-bnd";
+            if(q.question_type === "Form, Structure, and Sense") tagClass = "tag-fss";
+            if(q.question_type === "Transitions") tagClass = "tag-tra";
+            if(q.question_type === "Rhetorical Synthesis") tagClass = "tag-rhs";
+            
+            document.getElementById('quizCategoryTag').className = `selected-tag ${tagClass}`;
+            
+            document.getElementById('quizQuestionText').textContent = q.question_text;
             document.getElementById('btnOptA').textContent = `A. ${q.option_a}`;
             document.getElementById('btnOptB').textContent = `B. ${q.option_b}`;
             document.getElementById('btnOptC').textContent = `C. ${q.option_c}`;
@@ -468,30 +481,25 @@
 
         function checkAnswer(selectedOption) {
             const q = currentQuizList[currentQuestionIndex];
-            const correctOption = (q.correct_answer || "").trim().toUpperCase(); // Bắt buộc đáp án đúng là chữ in hoa A, B, C, D
+            const correctOption = (q.correct_answer || "").trim().toUpperCase();
 
-            // Khóa tất cả nút lại không cho bấm nữa
             const buttons = document.querySelectorAll('.quiz-option-btn');
             buttons.forEach(btn => btn.disabled = true);
 
-            // Check đúng sai
             const selectedBtn = document.getElementById('btnOpt' + selectedOption);
             if (selectedOption === correctOption) {
                 selectedBtn.classList.add('correct');
             } else {
                 selectedBtn.classList.add('wrong');
-                // Nếu sai, tô xanh cái nút đúng lên cho biết
                 const correctBtn = document.getElementById('btnOpt' + correctOption);
                 if(correctBtn) correctBtn.classList.add('correct');
             }
 
-            // Hiện khung giải thích "Deep Analysis"
             document.getElementById('expCorrect').textContent = correctOption;
             document.getElementById('expWhyWrong').textContent = q.why_wrong || "Chưa nhập lý do sai.";
             document.getElementById('expTakeaway').textContent = q.takeaway || "Chưa nhập bài học.";
             document.getElementById('quizExplanation').style.display = 'block';
 
-            // Hiện nút Next
             const nextBtn = document.getElementById('btnNextQuiz');
             nextBtn.style.display = 'block';
             if (currentQuestionIndex === currentQuizList.length - 1) {
@@ -507,7 +515,6 @@
                 loadQuizQuestion();
             } else {
                 alert("🎉 Tuyệt vời! Bà đã hoàn thành bài ôn tập. Nhớ kỹ các lỗi sai nha!");
-                // Quay về màn hình setup
                 document.getElementById('testSetupCard').style.display = 'block';
                 document.getElementById('quizCard').style.display = 'none';
             }
