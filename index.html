@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌸 SAT ERROR LOG & TEST - Bluebook Edition</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -20,7 +21,7 @@
         .mode-btn { padding: 12px 25px; border: 2px solid var(--border-pink); background-color: white; color: var(--border-pink); border-radius: 30px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .mode-btn.active { background-color: var(--border-pink); color: white; box-shadow: 0 4px 10px rgba(233, 109, 157, 0.4); }
 
-        .app-section { display: none; width: 100%; max-width: 1300px; } /* Mở rộng tối đa cho bảng log rộng rãi */
+        .app-section { display: none; width: 100%; max-width: 1300px; } 
         .app-section.active { display: block; }
 
         /* --- FORM NHẬP LIỆU --- */
@@ -33,32 +34,44 @@
         .form-section h3 { border-bottom: 2px solid var(--header-pink); color: var(--border-pink); padding-bottom: 5px; margin-top: 0; }
         .form-group { display: flex; flex-direction: column; }
         label { font-weight: bold; font-size: 0.9em; margin-bottom: 5px; color: var(--border-pink); }
-        input[type="text"], input[type="date"], input[type="number"], textarea, select { border: 1px solid var(--header-pink); border-radius: 8px; padding: 12px; background-color: #FFF; transition: 0.3s; line-height: 1.5; }
+        input[type="text"], input[type="date"], input[type="number"], textarea, select { border: 1px solid var(--header-pink); border-radius: 8px; padding: 12px; background-color: #FFF; transition: 0.3s; line-height: 1.5; font-family: inherit;}
         input:focus, textarea:focus, select:focus { outline: none; border-color: var(--border-pink); box-shadow: 0 0 5px rgba(233, 109, 157, 0.3); }
         textarea { resize: vertical; height: 100px; }
         .submit-btn { grid-column: span 2; background-color: var(--border-pink); color: white; border: none; border-radius: 8px; padding: 15px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .submit-btn:hover { background-color: #D15A8B; transform: translateY(-2px); }
         #successMessage { grid-column: span 2; background-color: var(--success-color); border: 1px solid #C3E6CB; color: #155724; padding: 10px; border-radius: 8px; text-align: center; display: none; }
 
-        /* --- BẢNG LỊCH SỬ LOG SIÊU TO KHỔNG LỒ (ĐÃ FIX VISUAL) --- */
+        /* --- CHART DASHBOARD --- */
+        .dashboard-container {
+            background-color: white; border: 2px solid var(--border-pink); border-radius: 12px; padding: 25px;
+            margin-top: 40px; box-shadow: 0 4px 15px rgba(233, 109, 157, 0.2); max-width: 900px; margin-left: auto; margin-right: auto;
+        }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid var(--header-pink); padding-bottom: 10px;}
+        .dashboard-header h3 { color: var(--border-pink); margin: 0; }
+        .chart-wrapper { position: relative; height: 350px; width: 100%; display: flex; justify-content: center;}
+
+        /* --- BẢNG LỊCH SỬ LOG SIÊU TO KHỔNG LỒ --- */
         .log-history { width: 100%; margin-top: 40px; }
+        .table-header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .filter-group { display: flex; gap: 10px; flex-wrap: wrap; }
         .table-responsive { width: 100%; overflow-x: auto; border-radius: 12px; border: 2px solid var(--border-pink); box-shadow: 0 4px 15px rgba(233, 109, 157, 0.2); background-color: white;}
-        table { width: 100%; min-width: 1600px; border-collapse: collapse; }
+        table { width: 100%; min-width: 2000px; border-collapse: collapse; }
         th { background-color: var(--header-pink); color: var(--border-pink); text-align: center; padding: 15px; font-size: 0.9em; border-bottom: 2px solid var(--border-pink); position: sticky; top: 0; z-index: 10;}
         td { padding: 15px 12px; border-bottom: 1px solid #FFEBEF; font-size: 0.85em; text-align: left; vertical-align: top; word-break: break-word; line-height: 1.6; }
         tr:nth-child(even) { background-color: #FFF5F9; }
         tr:hover td { background-color: #FFEDF4; }
         
-        /* Chỉnh lại độ rộng cột cho đẹp */
         .col-status { width: 100px; text-align: center; }
         .col-date { width: 90px; white-space: nowrap; }
+        .col-time-ago { width: 100px; text-align: center; font-weight: bold; color: var(--border-pink); white-space: nowrap; }
         .col-type { width: 180px; text-align: center; }
         .col-question { min-width: 300px; }
         .col-options { min-width: 200px; }
         .col-ans { width: 70px; text-align: center; font-weight: bold; }
+        .col-why-chose { min-width: 200px; }
         .col-explain { min-width: 220px; }
 
-        /* --- CUSTOM DROPDOWN & TAGS (ĐÃ FIX CẤM RỚT DÒNG) --- */
+        /* --- CUSTOM DROPDOWN & TAGS --- */
         .custom-dropdown { position: relative; width: 100%; user-select: none; }
         .dropdown-selected { border: 1px solid var(--header-pink); border-radius: 8px; padding: 12px; background-color: #FFF; cursor: pointer; display: flex; align-items: center; min-height: 20px; }
         .dropdown-options { display: none; position: absolute; background-color: #FFF; border: 1px solid var(--header-pink); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; width: 100%; z-index: 99; margin-top: 5px; padding: 10px; box-sizing: border-box; }
@@ -67,7 +80,7 @@
         .dropdown-item, .selected-tag { 
             padding: 6px 12px; border-radius: 20px; font-size: 0.9em; font-weight: 500; cursor: pointer; 
             display: inline-block; text-align: center;
-            white-space: nowrap; /* ĐÂY LÀ PHÉP MÀU CHỐNG RỚT DÒNG */
+            white-space: nowrap; 
         }
         .dropdown-item:hover { opacity: 0.8; }
         
@@ -168,18 +181,61 @@
             <button type="submit" class="submit-btn" id="submitBtn">LOG IT! 🌸</button>
         </form>
 
+        <div class="dashboard-container" id="dashboardContainer" style="display: none;">
+            <div class="dashboard-header">
+                <h3>📊 Thống kê các dạng hay "rớt não"</h3>
+                <select id="chartTimeFilter" onchange="renderChart()" style="padding: 5px 10px; width: auto; border-radius: 8px; border: 1px solid var(--border-pink); outline: none;">
+                    <option value="7">Tuần này (7 ngày)</option>
+                    <option value="30">Tháng này (30 ngày)</option>
+                    <option value="90">3 tháng gần đây</option>
+                    <option value="all" selected>Toàn bộ thời gian</option>
+                </select>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="errorChart"></canvas>
+            </div>
+        </div>
+
         <div class="log-history">
-            <h2 style="color: var(--border-pink); text-align: center;">YOUR HISTORY LOG</h2>
+            <div class="table-header-container">
+                <h2 style="color: var(--border-pink); margin: 0;">YOUR HISTORY LOG</h2>
+                
+                <div class="filter-group">
+                    <select id="tableTimeFilter" onchange="filterTable()" style="padding: 10px; border-radius: 8px; border: 2px solid var(--border-pink); font-family: inherit; font-weight: 500; outline: none; background: white; color: var(--border-pink);">
+                        <option value="ALL">🕒 Mọi thời điểm</option>
+                        <option value="today">Hôm nay</option>
+                        <option value="7">7 ngày qua</option>
+                        <option value="30">30 ngày qua</option>
+                    </select>
+
+                    <select id="tableTypeFilter" onchange="filterTable()" style="padding: 10px; border-radius: 8px; border: 2px solid var(--border-pink); font-family: inherit; font-weight: 500; outline: none;">
+                        <option value="ALL">🌸 Hiển thị tất cả các dạng</option>
+                        <option value="Central Ideas and Details">Central Ideas and Details</option>
+                        <option value="Command of Evidence">Command of Evidence</option>
+                        <option value="Inferences">Inferences</option>
+                        <option value="Words in Context">Words in Context</option>
+                        <option value="Text Structure and Purpose">Text Structure and Purpose</option>
+                        <option value="Cross-Text Connections">Cross-Text Connections</option>
+                        <option value="Boundaries">Boundaries</option>
+                        <option value="Form, Structure, and Sense">Form, Structure, and Sense</option>
+                        <option value="Transitions">Transitions</option>
+                        <option value="Rhetorical Synthesis">Rhetorical Synthesis</option>
+                    </select>
+                </div>
+            </div>
+            
             <div class="table-responsive">
                 <table id="logTable">
                     <thead>
                         <tr>
                             <th class="col-status">Status</th>
                             <th class="col-date">Date</th>
+                            <th class="col-time-ago">Đã trôi qua</th>
                             <th class="col-type">Type</th>
                             <th class="col-question">Question</th>
                             <th class="col-options">Options</th>
                             <th class="col-ans">My Ans</th>
+                            <th class="col-why-chose">Tại sao chọn sai?</th>
                             <th class="col-ans">Key</th>
                             <th class="col-explain">Why Correct?</th>
                             <th class="col-explain">Why Wrong?</th>
@@ -211,6 +267,16 @@
                     <option value="Rhetorical Synthesis">Rhetorical Synthesis</option>
                 </select>
             </div>
+
+            <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+                <label>Trạng Thái Câu Hỏi</label>
+                <select id="testStatusFilter">
+                    <option value="ALL">Tất cả (Bao gồm câu đã ôn)</option>
+                    <option value="Chưa ôn">Chỉ lấy câu Chưa ôn</option>
+                    <option value="Đã ôn - Sai">Chỉ lấy câu đã Ôn nhưng Sai</option>
+                </select>
+            </div>
+
             <div class="form-group" style="margin-bottom: 30px; text-align: left;">
                 <label>Số lượng câu hỏi:</label>
                 <input type="number" id="testQuestionCount" value="5" min="1" max="50">
@@ -248,6 +314,12 @@
     </div>
 
     <script>
+        // HÀM BẢO VỆ CHỐNG VỠ BẢNG
+        function escapeHTML(str) {
+            if (str === null || str === undefined) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
         // Helper Lấy Class Màu Tag
         function getTagClass(type) {
             if(type === "Central Ideas and Details") return "tag-cid";
@@ -283,10 +355,13 @@
             if (!dropdownSelected.contains(e.target) && !dropdownOptions.contains(e.target)) dropdownOptions.classList.remove('show');
         });
 
-        // Supabase - LOGIC KẾT NỐI KHÔNG THAY ĐỔI
+        // Supabase
         const SUPABASE_URL = 'https://okkyzqgqyzcwnaccelnj.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ra3l6cWdxeXpjd25hY2NlbG5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4ODIyNTksImV4cCI6MjA5MDQ1ODI1OX0.ncrE4WgXdXlq8zPBstmnxKMkAqy-gdxkgSq0t9oGLxU';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let globalLogsData = []; 
+        let myChartInstance = null; 
 
         function switchMode(mode) {
             document.getElementById('btnLogMode').classList.remove('active'); document.getElementById('btnTestMode').classList.remove('active');
@@ -301,35 +376,180 @@
 
         const tableBody = document.getElementById('logTableBody');
         async function fetchLogs() {
-            tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 30px; font-weight: bold; color: var(--border-pink);">🌸 Đang tải dữ liệu...</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="12" style="text-align: center; padding: 30px; font-weight: bold; color: var(--border-pink);">🌸 Đang tải dữ liệu...</td></tr>';
             const { data, error } = await supabaseClient.from('logs').select('*').order('date_done', { ascending: false });
-            if (error || !data || data.length === 0) { tableBody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding: 30px;">Chưa có câu nào. Log thêm lỗi đi bà!</td></tr>'; return; }
+            if (error || !data || data.length === 0) { 
+                tableBody.innerHTML = '<tr><td colspan="12" style="text-align:center; padding: 30px;">Chưa có câu nào. Log thêm lỗi đi bà!</td></tr>'; 
+                document.getElementById('dashboardContainer').style.display = 'none';
+                return; 
+            }
             
-            tableBody.innerHTML = '';
-            data.forEach(log => {
-                let statusBadge = `<span class="status-badge" style="background:#eee; color:#666;">Chưa ôn</span>`;
-                if(log.review_status === "Đã ôn - Đúng") statusBadge = `<span class="status-badge" style="background:#D4EDDA; color:#155724;">✅ Đã ôn (Đúng)</span>`;
-                if(log.review_status === "Đã ôn - Sai") statusBadge = `<span class="status-badge" style="background:#F8D7DA; color:#721c24;">❌ Đã ôn (Sai)</span>`;
+            globalLogsData = data; 
+            document.getElementById('dashboardContainer').style.display = 'block';
+            
+            try {
+                renderChart(); 
+            } catch(e) {
+                console.error("Lỗi chart:", e);
+                document.getElementById('dashboardContainer').style.display = 'none';
+            }
 
-                tableBody.innerHTML += `<tr>
-                    <td class="col-status">${statusBadge}</td>
-                    <td class="col-date">${log.date_done || ''}</td>
-                    <td class="col-type"><span class="selected-tag ${getTagClass(log.question_type)}">${log.question_type || ''}</span></td>
-                    <td class="col-question"><strong>${log.question_text || ''}</strong></td>
-                    <td class="col-options">
-                        <div style="margin-bottom: 5px;"><strong>A:</strong> ${log.option_a || ''}</div>
-                        <div style="margin-bottom: 5px;"><strong>B:</strong> ${log.option_b || ''}</div>
-                        <div style="margin-bottom: 5px;"><strong>C:</strong> ${log.option_c || ''}</div>
-                        <div><strong>D:</strong> ${log.option_d || ''}</div>
-                    </td>
-                    <td class="col-ans" style="color: #dc3545;">${log.wrong_answer || ''}</td>
-                    <td class="col-ans" style="color: #28a745;">${log.correct_answer || ''}</td>
-                    <td class="col-explain" style="color: #28a745; background-color: #f9fff9;">${log.why_correct || ''}</td>
-                    <td class="col-explain" style="color: #dc3545; background-color: #fffafb;">${log.why_wrong || ''}</td>
-                    <td class="col-explain" style="background-color: #fcf8fa; font-weight: 500;">${log.takeaway || ''}</td>
-                </tr>`;
+            tableBody.innerHTML = '';
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let htmlBuffer = '';
+
+            data.forEach(log => {
+                try {
+                    let statusBadge = `<span class="status-badge" style="background:#eee; color:#666;">Chưa ôn</span>`;
+                    if(log.review_status === "Đã ôn - Đúng") statusBadge = `<span class="status-badge" style="background:#D4EDDA; color:#155724;">✅ Đã ôn (Đúng)</span>`;
+                    if(log.review_status === "Đã ôn - Sai") statusBadge = `<span class="status-badge" style="background:#F8D7DA; color:#721c24;">❌ Đã ôn (Sai)</span>`;
+
+                    let timeAgoDisplay = "";
+                    let diffDaysForFilter = ""; // Dùng để làm giá trị cho filter thời gian ẩn dưới HTML
+                    
+                    if(log.date_done) {
+                        const logDate = new Date(log.date_done);
+                        if (!isNaN(logDate.getTime())) {
+                            const diffTime = today.getTime() - logDate.getTime();
+                            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                            diffDaysForFilter = diffDays;
+                            
+                            if (diffDays === 0) timeAgoDisplay = "Hôm nay";
+                            else if (diffDays > 0) timeAgoDisplay = `${diffDays} ngày trước`;
+                            else timeAgoDisplay = "Ở tương lai?"; 
+                        }
+                    }
+
+                    // Thêm thuộc tính data-diff để phục vụ cho bộ lọc thời gian ở bảng
+                    htmlBuffer += `<tr data-type="${escapeHTML(log.question_type)}" data-diff="${diffDaysForFilter}">
+                        <td class="col-status">${statusBadge}</td>
+                        <td class="col-date">${escapeHTML(log.date_done)}</td>
+                        <td class="col-time-ago">${timeAgoDisplay}</td>
+                        <td class="col-type"><span class="selected-tag ${getTagClass(log.question_type)}">${escapeHTML(log.question_type)}</span></td>
+                        <td class="col-question"><strong>${escapeHTML(log.question_text)}</strong></td>
+                        <td class="col-options">
+                            <div style="margin-bottom: 5px;"><strong>A:</strong> ${escapeHTML(log.option_a)}</div>
+                            <div style="margin-bottom: 5px;"><strong>B:</strong> ${escapeHTML(log.option_b)}</div>
+                            <div style="margin-bottom: 5px;"><strong>C:</strong> ${escapeHTML(log.option_c)}</div>
+                            <div><strong>D:</strong> ${escapeHTML(log.option_d)}</div>
+                        </td>
+                        <td class="col-ans" style="color: #dc3545;">${escapeHTML(log.wrong_answer)}</td>
+                        <td class="col-why-chose" style="background-color: #fffafb; color: #856404; font-style: italic;">${escapeHTML(log.why_i_chose_wrong || 'Chưa ghi chú')}</td>
+                        <td class="col-ans" style="color: #28a745;">${escapeHTML(log.correct_answer)}</td>
+                        <td class="col-explain" style="color: #28a745; background-color: #f9fff9;">${escapeHTML(log.why_correct)}</td>
+                        <td class="col-explain" style="color: #dc3545; background-color: #fffafb;">${escapeHTML(log.why_wrong)}</td>
+                        <td class="col-explain" style="background-color: #fcf8fa; font-weight: 500;">${escapeHTML(log.takeaway)}</td>
+                    </tr>`;
+                } catch (err) {
+                    console.error("Lỗi render dòng:", err);
+                }
+            });
+            
+            tableBody.innerHTML = htmlBuffer;
+            // Chạy filter luôn ngay sau khi fetch xong lỡ dropdown đang chọn trước đó
+            filterTable();
+        }
+
+        // HÀM LỌC KÉP CHO BẢNG: Vừa lọc DẠNG, vừa lọc THỜI GIAN
+        function filterTable() {
+            const typeFilter = document.getElementById('tableTypeFilter').value;
+            const timeFilter = document.getElementById('tableTimeFilter').value;
+            const rows = document.querySelectorAll('#logTableBody tr');
+            
+            rows.forEach(row => {
+                const rowType = row.getAttribute('data-type');
+                const rowDiffStr = row.getAttribute('data-diff');
+                const rowDiff = rowDiffStr !== "" ? parseInt(rowDiffStr) : NaN;
+                
+                // Kiểm tra xem dòng có khớp dạng câu hỏi không
+                let typeMatch = (typeFilter === 'ALL' || rowType === typeFilter);
+                
+                // Kiểm tra xem dòng có khớp thời gian không
+                let timeMatch = true;
+                if (timeFilter !== 'ALL') {
+                    if (timeFilter === 'today') {
+                        timeMatch = (rowDiff === 0);
+                    } else {
+                        const daysLimit = parseInt(timeFilter);
+                        timeMatch = (!isNaN(rowDiff) && rowDiff >= 0 && rowDiff <= daysLimit);
+                    }
+                }
+                
+                // Phải thỏa mãn CẢ 2 điều kiện thì mới hiện lên
+                if (typeMatch && timeMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
             });
         }
+
+        function renderChart() {
+            const filterValue = document.getElementById('chartTimeFilter').value;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let filteredLogs = globalLogsData;
+            if (filterValue !== 'all') {
+                const daysLimit = parseInt(filterValue);
+                filteredLogs = globalLogsData.filter(log => {
+                    if (!log.date_done) return false;
+                    const logDate = new Date(log.date_done);
+                    if (isNaN(logDate.getTime())) return false;
+                    
+                    const diffDays = Math.floor((today.getTime() - logDate.getTime()) / (1000 * 60 * 60 * 24));
+                    return diffDays >= 0 && diffDays <= daysLimit;
+                });
+            }
+
+            const counts = {};
+            filteredLogs.forEach(log => {
+                const type = log.question_type || "Chưa phân loại";
+                counts[type] = (counts[type] || 0) + 1;
+            });
+
+            const sortedKeys = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+            const labels = sortedKeys;
+            const data = sortedKeys.map(key => counts[key]);
+
+            const ctx = document.getElementById('errorChart').getContext('2d');
+            
+            if (myChartInstance) {
+                myChartInstance.destroy();
+            }
+
+            const pinkPalette = ['#E96D9D', '#FFC0CB', '#F7D6E0', '#D15A8B', '#FF69B4', '#DB7093', '#FFB6C1', '#C71585', '#F08080', '#FF1493'];
+
+            myChartInstance = new Chart(ctx, {
+                type: 'pie', 
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Số lần sai',
+                        data: data,
+                        backgroundColor: pinkPalette,
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            display: true,
+                            position: window.innerWidth > 768 ? 'right' : 'bottom',
+                            labels: { font: { family: "'Segoe UI', Tahoma, sans-serif" } }
+                        },
+                        tooltip: { backgroundColor: '#E96D9D' }
+                    }
+                }
+            });
+        }
+
         fetchLogs();
 
         document.getElementById('logForm').addEventListener('submit', async (e) => {
@@ -374,17 +594,19 @@
 
         async function startTest() {
             const category = document.getElementById('testCategoryFilter').value;
+            const status = document.getElementById('testStatusFilter').value;
             const limit = parseInt(document.getElementById('testQuestionCount').value);
             const btn = document.querySelector('.test-setup-card .submit-btn');
             btn.textContent = "Đang soạn đề..."; btn.disabled = true;
 
             let query = supabaseClient.from('logs').select('*');
             if (category !== 'ALL') query = query.eq('question_type', category);
+            if (status !== 'ALL') query = query.eq('review_status', status); 
             
             const { data, error } = await query;
             btn.textContent = "BẮT ĐẦU TEST! 🚀"; btn.disabled = false;
 
-            if (error || !data || data.length === 0) { alert("Kho chưa có câu nào dạng này!"); return; }
+            if (error || !data || data.length === 0) { alert("Sập hầm! Kho hông có câu nào thỏa mãn điều kiện lọc của bà rùi."); return; }
 
             currentQuizList = data.sort(() => 0.5 - Math.random()).slice(0, limit);
             currentQuestionIndex = 0;
@@ -409,11 +631,11 @@
             document.getElementById('quizCategoryTag').textContent = q.question_type;
             document.getElementById('quizCategoryTag').className = `selected-tag ${getTagClass(q.question_type)}`;
             
-            qTextNode.innerHTML = q.question_text; 
-            document.getElementById('btnOptA').innerHTML = `<strong>A.</strong> ${q.option_a}`;
-            document.getElementById('btnOptB').innerHTML = `<strong>B.</strong> ${q.option_b}`;
-            document.getElementById('btnOptC').innerHTML = `<strong>C.</strong> ${q.option_c}`;
-            document.getElementById('btnOptD').innerHTML = `<strong>D.</strong> ${q.option_d}`;
+            qTextNode.innerHTML = escapeHTML(q.question_text); 
+            document.getElementById('btnOptA').innerHTML = `<strong>A.</strong> ${escapeHTML(q.option_a)}`;
+            document.getElementById('btnOptB').innerHTML = `<strong>B.</strong> ${escapeHTML(q.option_b)}`;
+            document.getElementById('btnOptC').innerHTML = `<strong>C.</strong> ${escapeHTML(q.option_c)}`;
+            document.getElementById('btnOptD').innerHTML = `<strong>D.</strong> ${escapeHTML(q.option_d)}`;
         }
 
         async function checkAnswer(selectedOption) {
@@ -435,8 +657,8 @@
                 expDiv.classList.add('exp-correct-mode');
                 expDiv.innerHTML = `
                     <h4 style="color: #28a745;">🎉 CHÍNH XÁC! Quá dữ luôn!</h4>
-                    <p><strong>Tại sao câu này đúng:</strong> ${q.why_correct || "Bà chưa nhập lý do câu này đúng lúc log lỗi."}</p>
-                    <p><strong>Takeaway nhắc nhẹ:</strong> ${q.takeaway || ""}</p>
+                    <p><strong>Tại sao câu này đúng:</strong> ${escapeHTML(q.why_correct) || "Bà chưa nhập lý do câu này đúng lúc log lỗi."}</p>
+                    <p><strong>Takeaway nhắc nhẹ:</strong> ${escapeHTML(q.takeaway) || ""}</p>
                 `;
                 newStatus = "Đã ôn - Đúng";
             } else {
@@ -448,9 +670,9 @@
                 expDiv.innerHTML = `
                     <h4 style="color: #dc3545;">❌ ÔI SAI RỒI! Nhìn kỹ lại bẫy này:</h4>
                     <p><strong>Đáp án đúng phải là:</strong> ${correctOption}</p>
-                    <p><strong>Tại sao chọn ${selectedOption} lại sai:</strong> ${q.why_wrong || "Bà chưa vạch trần bẫy câu này lúc log."}</p>
+                    <p><strong>Tại sao chọn ${selectedOption} lại sai:</strong> ${escapeHTML(q.why_wrong) || "Bà chưa vạch trần bẫy câu này lúc log."}</p>
                     <div style="background-color: white; padding: 10px; border-radius: 5px; margin-top: 10px; border: 1px solid #F7D6E0;">
-                        <strong>💡 BÀI HỌC SƯƠNG MÁU (Takeaway):</strong><br>${q.takeaway || "Cần chú ý kỹ hơn!"}
+                        <strong>💡 BÀI HỌC SƯƠNG MÁU (Takeaway):</strong><br>${escapeHTML(q.takeaway) || "Cần chú ý kỹ hơn!"}
                     </div>
                 `;
                 newStatus = "Đã ôn - Sai";
