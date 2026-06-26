@@ -6,16 +6,32 @@
     <title>🌸 SAT ERROR LOG & VOCAB - Bluebook Edition</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]'], ['$$', '$$']],
+                processEscapes: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <style>
         :root {
             --header-pink: #F7D6E0; --row-pink-dark: #FFC0CB; --border-pink: #E96D9D;
             --background: #FFF5F8; --text-color: #4A4A4A; --success-color: #D4EDDA;
             --error-color: #F8D7DA; --bluebook-blue: #005A9C; --highlight-yellow: #FFF176;
             --highlight-green: #C8E6C9; --highlight-blue: #BBDEFB; --highlight-pink: #F8BBD0;
+            --highlight-purple: #E1BEE7; --highlight-orange: #FFE0B2; --highlight-cyan: #B2EBF2;
             --vocab-card-bg: #fff;
         }
 
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--background); color: var(--text-color); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        *, *::before, *::after { box-sizing: border-box; }
+        html { width: 100%; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--background); color: var(--text-color); margin: 0; padding: 18px; display: flex; flex-direction: column; align-items: center; width: 100%; min-width: 0; overflow-x: hidden; }
         h1 { color: var(--border-pink); margin-bottom: 20px; text-align: center; }
 
         /* --- MODE SWITCHER --- */
@@ -23,22 +39,22 @@
         .mode-btn { padding: 12px 20px; border: 2px solid var(--border-pink); background-color: white; color: var(--border-pink); border-radius: 30px; font-size: 1em; font-weight: bold; cursor: pointer; transition: 0.3s; text-align: center;}
         .mode-btn.active { background-color: var(--border-pink); color: white; box-shadow: 0 4px 10px rgba(233, 109, 157, 0.4); }
 
-        .app-section { display: none; width: 100%; max-width: 1300px; } 
+        .app-section { display: none; width: 100%; max-width: 1180px; min-width: 0; } 
         .app-section.active { display: block; }
 
         /* --- FORM NHẬP LIỆU --- */
         .log-form {
-            background-color: white; border: 2px solid var(--border-pink); border-radius: 12px; padding: 30px;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; box-shadow: 0 4px 15px rgba(233, 109, 157, 0.2);
-            max-width: 900px; margin: 0 auto;
+            background-color: white; border: 2px solid var(--border-pink); border-radius: 12px; padding: 26px;
+            display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; box-shadow: 0 4px 15px rgba(233, 109, 157, 0.2);
+            width: 100%; max-width: 1120px; margin: 0 auto; overflow: hidden;
         }
-        .form-section { display: flex; flex-direction: column; gap: 15px; }
+        .form-section { display: flex; flex-direction: column; gap: 15px; min-width: 0; }
         .form-section h3 { border-bottom: 2px solid var(--header-pink); color: var(--border-pink); padding-bottom: 5px; margin-top: 0; }
-        .form-group { display: flex; flex-direction: column; }
+        .form-group { display: flex; flex-direction: column; min-width: 0; }
         label { font-weight: bold; font-size: 0.9em; margin-bottom: 5px; color: var(--border-pink); }
-        input[type="text"], input[type="date"], input[type="number"], textarea, select, input[type="file"] { border: 1px solid var(--header-pink); border-radius: 8px; padding: 12px; background-color: #FFF; transition: 0.3s; line-height: 1.5; font-family: inherit;}
+        input[type="text"], input[type="date"], input[type="number"], textarea, select, input[type="file"] { border: 1px solid var(--header-pink); border-radius: 8px; padding: 12px; background-color: #FFF; transition: 0.3s; line-height: 1.5; font-family: inherit; width: 100%; max-width: 100%; min-width: 0; }
         input:focus, textarea:focus, select:focus { outline: none; border-color: var(--border-pink); box-shadow: 0 0 5px rgba(233, 109, 157, 0.3); }
-        textarea { resize: vertical; height: 100px; }
+        textarea { resize: vertical; height: 100px; overflow-x: hidden; }
         .submit-btn { grid-column: span 2; background-color: var(--border-pink); color: white; border: none; border-radius: 8px; padding: 15px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%;}
         .submit-btn:hover { background-color: #D15A8B; transform: translateY(-2px); }
         #successMessage { grid-column: span 2; background-color: var(--success-color); border: 1px solid #C3E6CB; color: #155724; padding: 10px; border-radius: 8px; text-align: center; display: none; }
@@ -53,7 +69,7 @@
         .table-header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
         .filter-group { display: flex; gap: 10px; flex-wrap: wrap; width: 100%; justify-content: flex-end;}
         .filter-group select { flex: 1; min-width: 150px; }
-        .table-responsive { width: 100%; overflow-x: auto; border-radius: 12px; border: 2px solid var(--border-pink); box-shadow: 0 4px 15px rgba(233, 109, 157, 0.2); background-color: white;}
+        .table-responsive { width: 100%; max-width: 100%; overflow-x: auto; border-radius: 12px; border: 2px solid var(--border-pink); box-shadow: 0 4px 15px rgba(233, 109, 157, 0.2); background-color: white;}
         table { width: 100%; min-width: 1800px; border-collapse: collapse; }
         th { background-color: var(--header-pink); color: var(--border-pink); text-align: center; padding: 15px; font-size: 0.9em; border-bottom: 2px solid var(--border-pink); position: sticky; top: 0; z-index: 10;}
         td { padding: 15px 12px; border-bottom: 1px solid #FFEBEF; font-size: 0.85em; text-align: left; vertical-align: top; word-break: break-word; line-height: 1.6; }
@@ -78,9 +94,34 @@
         .tag-tra { background-color: #F3E8FD; color: #8430CE; border: 1px solid #8430CE;}
         .tag-rhs { background-color: #4C3A27; color: #EFE4D6; border: 1px solid #EFE4D6;}
         .status-badge { padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 0.85em; text-align: center; display: inline-block; white-space: nowrap;}
+        .tag-math-algebra { background-color: #E3F2FD; color: #0D47A1; border: 1px solid #0D47A1; }
+        .tag-math-advanced { background-color: #E8EAF6; color: #303F9F; border: 1px solid #303F9F; }
+        .tag-math-psda { background-color: #E0F2F1; color: #00695C; border: 1px solid #00695C; }
+        .tag-math-geo { background-color: #FFF3E0; color: #E65100; border: 1px solid #E65100; }
+        .tag-verbal { background-color: #FCE8E6; color: #C5221F; border: 1px solid #C5221F; }
+        .tag-subject { background-color: #F8F9FA; color: #555; border: 1px solid #bbb; margin-right: 5px; }
+        .quick-paste-card { grid-column: 1 / -1; width: 100%; min-width: 0; max-width: 100%; background: #FFF9FC; border: 1px dashed var(--border-pink); border-radius: 12px; padding: 16px; overflow: hidden; }
+        .quick-paste-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; min-width: 0; }
+        .quick-paste-head strong { color: var(--border-pink); min-width: 0; }
+        .quick-paste-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .mini-btn { border: 1px solid var(--border-pink); background: white; color: var(--border-pink); border-radius: 8px; padding: 8px 12px; cursor: pointer; font-weight: 700; }
+        .mini-btn:hover { background: #FFF0F6; }
+        #quickPasteBox { width: 100%; height: 150px; min-height: 120px; display: block; background: #fff; }
+        .option-image-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+        .option-image-grid > div { min-width: 0; }
+        .option-image-grid label { font-size: 0.78em; margin: 0 0 3px 0; }
+        .option-image-grid input { padding: 8px; font-size: 0.78em; }
+        .inline-option-img { display: block; max-width: 100%; max-height: 230px; object-fit: contain; margin-top: 8px; border: 1px solid #ddd; border-radius: 8px; background: white; }
+        .mini-help { font-size: 0.82em; color: #777; margin-top: 6px; line-height: 1.4; }
+        .desmos-input-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+        .desmos-embed-box { width: 100%; margin-top: 12px; border: 1px solid #D8E2F3; border-radius: 12px; overflow: hidden; background: white; }
+        .desmos-embed-title { padding: 8px 12px; font-weight: 800; color: var(--bluebook-blue); border-bottom: 1px solid #D8E2F3; background: #F7FAFF; display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+        .desmos-iframe { display: block; width: 100%; height: 420px; border: 0; background: white; }
+        #desmosScratchPanel { display: none; width: 100%; margin-bottom: 16px; border: 1px solid #D8E2F3; border-radius: 12px; overflow: hidden; background: white; }
+        #desmosScratchPanel .desmos-iframe { height: 360px; }
 
         /* --- QUIZ TEST --- */
-        .test-setup-card, .quiz-card { background-color: white; border: 2px solid var(--border-pink); border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(233, 109, 157, 0.2); text-align: center; position: relative; max-width: 900px; margin: 0 auto; width: 100%; box-sizing: border-box;}
+        .test-setup-card, .quiz-card { background-color: white; border: 2px solid var(--border-pink); border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(233, 109, 157, 0.2); text-align: center; position: relative; max-width: 1120px; margin: 0 auto; width: 100%; box-sizing: border-box;}
         .quiz-card { display: none; text-align: left; }
         .quiz-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 12px; flex-wrap: wrap;}
         .quiz-tool-left, .quiz-tool-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -96,6 +137,11 @@
         .hl-green { background-color: var(--highlight-green); }
         .hl-blue { background-color: var(--highlight-blue); }
         .hl-pink { background-color: var(--highlight-pink); }
+        .hl-purple { background-color: var(--highlight-purple); }
+        .hl-orange { background-color: var(--highlight-orange); }
+        .hl-cyan { background-color: var(--highlight-cyan); }
+        .hl-custom-wrap { display: inline-flex; align-items: center; gap: 5px; margin-left: 4px; font-size: 0.8em; color: #666; font-weight: 700; }
+        .hl-custom-input { width: 30px; height: 28px; padding: 0; border: 1px solid #bbb; border-radius: 6px; background: white; cursor: pointer; }
         .quiz-question-meta { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; color: var(--border-pink); }
         .quiz-question-text { font-size: 1.2em; font-weight: 500; margin-bottom: 25px; line-height: 1.6; white-space: pre-wrap; padding: 15px; border-left: 4px solid var(--bluebook-blue); background-color: #f9fbfd; word-break: break-word;}
         .highlighted { padding: 0 2px; border-radius: 3px; }
@@ -143,9 +189,12 @@
         @media screen and (max-width: 768px) {
             body { padding: 10px; }
             h1 { font-size: 1.5em; }
-            .log-form { grid-template-columns: 1fr; padding: 20px; } 
+            .log-form { grid-template-columns: 1fr; padding: 18px; } 
             .submit-btn, #successMessage { grid-column: span 1; }
             .form-group[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+            .quick-paste-card { grid-column: span 1; padding: 12px; }
+            .option-image-grid { grid-template-columns: 1fr; }
+            .desmos-iframe { height: 320px; }
             .mode-switcher { flex-direction: row; flex-wrap: wrap; }
             .mode-btn { flex: 1; min-width: 120px; font-size: 0.9em; padding: 10px;}
             .chart-wrapper { height: 280px; }
@@ -174,38 +223,66 @@
         <form class="log-form" id="logForm">
             <div id="successMessage">🎉 Logged successfully! Add another?</div>
             
+            
+            <div class="quick-paste-card">
+                <div class="quick-paste-head">
+                    <strong>⚡ Nhập nhanh từ ChatGPT / copy paste đề toán-verbal</strong>
+                    <div class="quick-paste-actions">
+                        <button type="button" class="mini-btn" onclick="fillQuickPasteTemplate()">Mẫu nhập</button>
+                        <button type="button" class="mini-btn" onclick="parseQuickPaste()">Đổ vào form</button>
+                    </div>
+                </div>
+                <textarea id="quickPasteBox" placeholder="Dán theo mẫu: SUBJECT: Math | CATEGORY: Algebra | SUBTYPE: Linear Equations | QUESTION: ... | A: ... | B: ... | C: ... | D: ... | KEY: B"></textarea>
+                <div class="mini-help">Mẹo: công thức dán dạng LaTeX như \(\frac{x+1}{2}\), \(x^2\), \(\sqrt{5}\) sẽ hiển thị đẹp trong phần ôn tập. Ảnh đồ thị của câu hỏi hoặc từng đáp án thì upload ở ô ảnh bên dưới; link/iframe Desmos thì dán ở ô Desmos.</div>
+            </div>
+
             <div class="form-section">
                 <h3>Question Details</h3>
                 <div class="form-group"><label>Date</label> <input type="date" id="date_done" required></div>
                 <div class="form-group"><label>Source/Link</label> <input type="text" id="source_link" placeholder="e.g., PT 1"></div>
                 <div class="form-group">
-                    <label>Question Type</label>
+                    <label>Môn / Section</label>
+                    <select id="question_subject" onchange="updateQuestionCategoryOptions()" required>
+                        <option value="Verbal">Verbal</option>
+                        <option value="Math">Math</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Nhóm lớn / Domain</label>
+                    <select id="question_category" onchange="updateQuestionSubtypeOptions()" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Dạng nhỏ / Skill</label>
+                    <select id="question_subtype" onchange="syncQuestionTypeField()" required></select>
                     <input type="hidden" id="question_type" required>
-                    <div class="custom-dropdown" id="customDropdown">
-                        <div class="dropdown-selected" id="dropdownSelected"><span>Select type...</span></div>
-                        <div class="dropdown-options" id="dropdownOptions">
-                            <div class="dropdown-item tag-cid" data-value="Central Ideas and Details">Central Ideas and Details</div>
-                            <div class="dropdown-item tag-coe" data-value="Command of Evidence">Command of Evidence</div>
-                            <div class="dropdown-item tag-inf" data-value="Inferences">Inferences</div>
-                            <div class="dropdown-item tag-wic" data-value="Words in Context">Words in Context</div>
-                            <div class="dropdown-item tag-tsp" data-value="Text Structure and Purpose">Text Structure and Purpose</div>
-                            <div class="dropdown-item tag-ctc" data-value="Cross-Text Connections">Cross-Text Connections</div>
-                            <div class="dropdown-item tag-bnd" data-value="Boundaries">Boundaries</div>
-                            <div class="dropdown-item tag-fss" data-value="Form, Structure, and Sense">Form, Structure, and Sense</div>
-                            <div class="dropdown-item tag-tra" data-value="Transitions">Transitions</div>
-                            <div class="dropdown-item tag-rhs" data-value="Rhetorical Synthesis">Rhetorical Synthesis</div>
-                        </div>
-                    </div>
                 </div>
                 <div class="form-group"><label>Câu hỏi</label> <textarea id="question_text" required></textarea></div>
                 
                 <div class="form-group"><label>Đính kèm ảnh (Bảng biểu, Đồ thị... Tùy chọn)</label> <input type="file" id="question_image" accept="image/*"></div>
 
-                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group desmos-input-row">
+                    <label>Desmos graph / calculator embed (tùy chọn)</label>
+                    <input type="text" id="desmos_embed" placeholder="Dán link Desmos hoặc iframe embed từ nút Share">
+                    <div class="mini-help">Có thể dán link kiểu https://www.desmos.com/calculator/... hoặc nguyên iframe embed. App sẽ lưu vào câu hỏi bằng marker [desmos:...], không cần thêm cột database.</div>
+                </div>
+
+                <div class="form-group" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px;">
                     <input type="text" id="option_a" placeholder="Option A" required>
                     <input type="text" id="option_b" placeholder="Option B" required>
                     <input type="text" id="option_c" placeholder="Option C" required>
                     <input type="text" id="option_d" placeholder="Option D" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Ảnh riêng cho từng đáp án nếu đáp án là đồ thị / hình</label>
+                    <div class="option-image-grid">
+                        <div><label>A image</label><input type="file" id="option_a_image" accept="image/*"></div>
+                        <div><label>B image</label><input type="file" id="option_b_image" accept="image/*"></div>
+                        <div><label>C image</label><input type="file" id="option_c_image" accept="image/*"></div>
+                        <div><label>D image</label><input type="file" id="option_d_image" accept="image/*"></div>
+                    </div>
                 </div>
             </div>
 
@@ -250,22 +327,22 @@
                         <option value="30">30 ngày qua</option>
                     </select>
 
+                    <select id="tableSubjectFilter" onchange="updateTableCategoryOptions()" style="padding: 10px; border-radius: 8px; border: 2px solid var(--border-pink); font-family: inherit; font-weight: 500; outline: none;">
+                        <option value="ALL">Math + Verbal</option>
+                        <option value="Verbal">Verbal</option>
+                        <option value="Math">Math</option>
+                    </select>
+
+                    <select id="tableCategoryFilter" onchange="updateTableSubtypeOptions()" style="padding: 10px; border-radius: 8px; border: 2px solid var(--border-pink); font-family: inherit; font-weight: 500; outline: none;">
+                        <option value="ALL">Tất cả nhóm lớn</option>
+                    </select>
+
                     <select id="tableTypeFilter" onchange="filterTable()" style="padding: 10px; border-radius: 8px; border: 2px solid var(--border-pink); font-family: inherit; font-weight: 500; outline: none;">
-                        <option value="ALL">🌸 Hiển thị tất cả các dạng</option>
-                        <option value="Central Ideas and Details">Central Ideas and Details</option>
-                        <option value="Command of Evidence">Command of Evidence</option>
-                        <option value="Inferences">Inferences</option>
-                        <option value="Words in Context">Words in Context</option>
-                        <option value="Text Structure and Purpose">Text Structure and Purpose</option>
-                        <option value="Cross-Text Connections">Cross-Text Connections</option>
-                        <option value="Boundaries">Boundaries</option>
-                        <option value="Form, Structure, and Sense">Form, Structure, and Sense</option>
-                        <option value="Transitions">Transitions</option>
-                        <option value="Rhetorical Synthesis">Rhetorical Synthesis</option>
+                        <option value="ALL">Tất cả dạng nhỏ</option>
                     </select>
                 </div>
             </div>
-            
+
             <div class="table-responsive">
                 <table id="logTable">
                     <thead>
@@ -294,19 +371,25 @@
         <div class="test-setup-card" id="testSetupCard">
             <h2>Thiết lập bài Test 🧠</h2>
             <div class="form-group" style="margin-bottom: 20px; text-align: left;">
-                <label>Chọn Dạng Bài</label>
-                <select id="testCategoryFilter">
-                    <option value="ALL">Random Tất Cả</option>
-                    <option value="Central Ideas and Details">Central Ideas and Details</option>
-                    <option value="Command of Evidence">Command of Evidence</option>
-                    <option value="Inferences">Inferences</option>
-                    <option value="Words in Context">Words in Context</option>
-                    <option value="Text Structure and Purpose">Text Structure and Purpose</option>
-                    <option value="Cross-Text Connections">Cross-Text Connections</option>
-                    <option value="Boundaries">Boundaries</option>
-                    <option value="Form, Structure, and Sense">Form, Structure, and Sense</option>
-                    <option value="Transitions">Transitions</option>
-                    <option value="Rhetorical Synthesis">Rhetorical Synthesis</option>
+                <label>Chọn Môn</label>
+                <select id="testSubjectFilter" onchange="updateTestCategoryOptions()">
+                    <option value="ALL">Random Math + Verbal</option>
+                    <option value="Verbal">Verbal</option>
+                    <option value="Math">Math</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+                <label>Nhóm lớn / Domain</label>
+                <select id="testCategoryFilter" onchange="updateTestSubtypeOptions()">
+                    <option value="ALL">Tất cả nhóm lớn</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+                <label>Dạng nhỏ / Skill</label>
+                <select id="testSubtypeFilter">
+                    <option value="ALL">Tất cả dạng nhỏ</option>
                 </select>
             </div>
 
@@ -332,20 +415,29 @@
                     <span class="quiz-timer-pill" id="questionTimer">⏱ 00:00</span>
                     <div class="highlight-palette" aria-label="Chọn màu highlight">
                         <span class="hl-label">Highlight</span>
-                        <button type="button" class="hl-color-btn hl-yellow active" id="hlBtnYellow" onclick="setHighlightColor('yellow')" title="Vàng"></button>
-                        <button type="button" class="hl-color-btn hl-green" id="hlBtnGreen" onclick="setHighlightColor('green')" title="Xanh lá"></button>
-                        <button type="button" class="hl-color-btn hl-blue" id="hlBtnBlue" onclick="setHighlightColor('blue')" title="Xanh dương"></button>
-                        <button type="button" class="hl-color-btn hl-pink" id="hlBtnPink" onclick="setHighlightColor('pink')" title="Hồng"></button>
+                        <button type="button" class="hl-color-btn hl-yellow active" onclick="setHighlightColor('#FFF176', this)" title="Vàng"></button>
+                        <button type="button" class="hl-color-btn hl-green" onclick="setHighlightColor('#C8E6C9', this)" title="Xanh lá"></button>
+                        <button type="button" class="hl-color-btn hl-blue" onclick="setHighlightColor('#BBDEFB', this)" title="Xanh dương"></button>
+                        <button type="button" class="hl-color-btn hl-pink" onclick="setHighlightColor('#F8BBD0', this)" title="Hồng"></button>
+                        <button type="button" class="hl-color-btn hl-purple" onclick="setHighlightColor('#E1BEE7', this)" title="Tím"></button>
+                        <button type="button" class="hl-color-btn hl-orange" onclick="setHighlightColor('#FFE0B2', this)" title="Cam"></button>
+                        <button type="button" class="hl-color-btn hl-cyan" onclick="setHighlightColor('#B2EBF2', this)" title="Cyan"></button>
+                        <span class="hl-custom-wrap">Tự chọn <input type="color" id="customHighlightColor" class="hl-custom-input" value="#D7BDE2" oninput="setHighlightColor(this.value, this)" title="Chọn màu tự do"></span>
                     </div>
                 </div>
                 <div class="quiz-tool-right">
                     <button class="tool-btn" id="btnEliminateMode" onclick="toggleEliminateMode()">✕ Eliminate mode</button>
+                    <button class="tool-btn" onclick="toggleDesmosScratch()">📈 Desmos</button>
                     <button class="tool-btn" onclick="clearHighlights()">🧹 Xóa highlight</button>
                     <button class="tool-btn" onclick="toggleScratchpad()">📝 Note</button>
                 </div>
             </div>
             
             <textarea id="scratchpad" placeholder="Gõ nháp vào đây..."></textarea>
+            <div id="desmosScratchPanel">
+                <div class="desmos-embed-title">📈 Desmos nháp <span style="font-size:0.85em; color:#777;">dùng để thử đồ thị khi làm câu toán</span></div>
+                <iframe class="desmos-iframe" src="https://www.desmos.com/calculator?embed" loading="lazy" allowfullscreen></iframe>
+            </div>
 
             <div class="quiz-question-meta">
                 <span id="quizCategoryTag" class="selected-tag tag-wic">Words in Context</span>
@@ -355,6 +447,7 @@
             <div class="quiz-question-text" id="quizQuestionText"></div>
             
             <img id="quizQuestionImage" src="" style="max-width: 100%; max-height: 400px; display: none; border-radius: 8px; margin-bottom: 25px; border: 1px solid #ccc;">
+            <div id="quizDesmosArea"></div>
 
             <div class="quiz-options">
                 <button class="quiz-option-btn" id="btnOptA" onclick="handleOptionClick('A', event)" oncontextmenu="eliminateOption(event, this)"></button>
@@ -408,18 +501,365 @@
             return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
+        const QUESTION_TAXONOMY = {
+            Verbal: {
+                "Information and Ideas": ["Central Ideas and Details", "Command of Evidence", "Inferences"],
+                "Craft and Structure": ["Words in Context", "Text Structure and Purpose", "Cross-Text Connections"],
+                "Expression of Ideas": ["Rhetorical Synthesis", "Transitions"],
+                "Standard English Conventions": ["Boundaries", "Form, Structure, and Sense"]
+            },
+            Math: {
+                "Algebra": ["Expressions", "Linear Equations", "Linear System of Equations", "Linear Functions", "Linear Inequalities"],
+                "Advanced Math": ["Polynomials", "Exponents & Radicals", "Functions & Function Notation", "Exponential Functions", "Quadratics"],
+                "Problem Solving and Data Analysis": ["Percent, Ratio & Proportion", "Unit Conversion", "Probability", "Mean, Median, Mode, Range", "Scatterplots", "Research Organizing (Margin of Error; Outliers)"],
+                "Geometry and Trigonometry": ["Lines & Angles", "Triangles", "Trigonometry", "Circles", "Areas & Volumes"]
+            }
+        };
+
+        const LEGACY_VERBAL_TAGS = {
+            "Central Ideas and Details": "tag-cid",
+            "Command of Evidence": "tag-coe",
+            "Inferences": "tag-inf",
+            "Words in Context": "tag-wic",
+            "Text Structure and Purpose": "tag-tsp",
+            "Cross-Text Connections": "tag-ctc",
+            "Boundaries": "tag-bnd",
+            "Form, Structure, and Sense": "tag-fss",
+            "Transitions": "tag-tra",
+            "Rhetorical Synthesis": "tag-rhs"
+        };
+
+        function normalizeText(str) {
+            return String(str || "").toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, " ").trim();
+        }
+
+        function findTaxonomyBySubtype(subtype) {
+            const target = normalizeText(subtype);
+            for (const subject of Object.keys(QUESTION_TAXONOMY)) {
+                for (const category of Object.keys(QUESTION_TAXONOMY[subject])) {
+                    const found = QUESTION_TAXONOMY[subject][category].find(item => normalizeText(item) === target);
+                    if (found) return { subject, category, subtype: found };
+                }
+            }
+            return null;
+        }
+
+        function getTypeParts(type) {
+            const raw = String(type || "").trim();
+            if (!raw || raw === "VOCAB") return { subject: "Other", category: "Other", subtype: raw || "Chưa phân loại" };
+
+            if (raw.includes(">")) {
+                const parts = raw.split(">").map(x => x.trim()).filter(Boolean);
+                return {
+                    subject: parts[0] || "Other",
+                    category: parts[1] || "Other",
+                    subtype: parts.slice(2).join(" > ") || parts[1] || raw
+                };
+            }
+
+            const found = findTaxonomyBySubtype(raw);
+            if (found) return found;
+
+            return { subject: "Verbal", category: "Other", subtype: raw };
+        }
+
+        function buildQuestionType(subject, category, subtype) {
+            return `${subject} > ${category} > ${subtype}`;
+        }
+
         function getTagClass(type) {
-            if(type === "Central Ideas and Details") return "tag-cid";
-            if(type === "Command of Evidence") return "tag-coe";
-            if(type === "Inferences") return "tag-inf";
-            if(type === "Words in Context") return "tag-wic";
-            if(type === "Text Structure and Purpose") return "tag-tsp";
-            if(type === "Cross-Text Connections") return "tag-ctc";
-            if(type === "Boundaries") return "tag-bnd";
-            if(type === "Form, Structure, and Sense") return "tag-fss";
-            if(type === "Transitions") return "tag-tra";
-            if(type === "Rhetorical Synthesis") return "tag-rhs";
-            return "tag-wic";
+            const parts = getTypeParts(type);
+
+            if (parts.subject === "Math") {
+                if (parts.category === "Algebra") return "tag-math-algebra";
+                if (parts.category === "Advanced Math") return "tag-math-advanced";
+                if (parts.category === "Problem Solving and Data Analysis") return "tag-math-psda";
+                if (parts.category === "Geometry and Trigonometry") return "tag-math-geo";
+                return "tag-math-algebra";
+            }
+
+            if (LEGACY_VERBAL_TAGS[parts.subtype]) return LEGACY_VERBAL_TAGS[parts.subtype];
+            return "tag-verbal";
+        }
+
+        function renderTypeBadge(type) {
+            const parts = getTypeParts(type);
+            return `<span class="selected-tag tag-subject">${escapeHTML(parts.subject)}</span><span class="selected-tag ${getTagClass(type)}">${escapeHTML(parts.category === "Other" ? parts.subtype : parts.category + " / " + parts.subtype)}</span>`;
+        }
+
+        function populateSelect(select, values, firstValue, firstLabel) {
+            if (!select) return;
+            select.innerHTML = "";
+            if (firstLabel !== undefined) {
+                const opt = document.createElement("option");
+                opt.value = firstValue;
+                opt.textContent = firstLabel;
+                select.appendChild(opt);
+            }
+            values.forEach(value => {
+                const opt = document.createElement("option");
+                opt.value = value;
+                opt.textContent = value;
+                select.appendChild(opt);
+            });
+        }
+
+        function getCategoriesForSubject(subject) {
+            if (subject === "ALL") {
+                return [...Object.keys(QUESTION_TAXONOMY.Verbal), ...Object.keys(QUESTION_TAXONOMY.Math)];
+            }
+            return Object.keys(QUESTION_TAXONOMY[subject] || {});
+        }
+
+        function getSubtypesFor(subject, category) {
+            let list = [];
+            const subjects = subject === "ALL" ? ["Verbal", "Math"] : [subject];
+            subjects.forEach(sub => {
+                const cats = category === "ALL" ? Object.keys(QUESTION_TAXONOMY[sub] || {}) : [category];
+                cats.forEach(cat => {
+                    list = list.concat(QUESTION_TAXONOMY[sub]?.[cat] || []);
+                });
+            });
+            return [...new Set(list)];
+        }
+
+        function updateQuestionCategoryOptions() {
+            const subject = document.getElementById("question_subject")?.value || "Verbal";
+            populateSelect(document.getElementById("question_category"), getCategoriesForSubject(subject));
+            updateQuestionSubtypeOptions();
+        }
+
+        function updateQuestionSubtypeOptions() {
+            const subject = document.getElementById("question_subject")?.value || "Verbal";
+            const category = document.getElementById("question_category")?.value || getCategoriesForSubject(subject)[0];
+            populateSelect(document.getElementById("question_subtype"), getSubtypesFor(subject, category));
+            syncQuestionTypeField();
+        }
+
+        function syncQuestionTypeField() {
+            const subject = document.getElementById("question_subject")?.value || "Verbal";
+            const category = document.getElementById("question_category")?.value || "";
+            const subtype = document.getElementById("question_subtype")?.value || "";
+            const hidden = document.getElementById("question_type");
+            if (hidden) hidden.value = buildQuestionType(subject, category, subtype);
+        }
+
+        function updateTableCategoryOptions() {
+            const subject = document.getElementById("tableSubjectFilter")?.value || "ALL";
+            populateSelect(document.getElementById("tableCategoryFilter"), getCategoriesForSubject(subject), "ALL", "Tất cả nhóm lớn");
+            updateTableSubtypeOptions();
+        }
+
+        function updateTableSubtypeOptions() {
+            const subject = document.getElementById("tableSubjectFilter")?.value || "ALL";
+            const category = document.getElementById("tableCategoryFilter")?.value || "ALL";
+            populateSelect(document.getElementById("tableTypeFilter"), getSubtypesFor(subject, category), "ALL", "Tất cả dạng nhỏ");
+            filterTable();
+        }
+
+        function updateTestCategoryOptions() {
+            const subject = document.getElementById("testSubjectFilter")?.value || "ALL";
+            populateSelect(document.getElementById("testCategoryFilter"), getCategoriesForSubject(subject), "ALL", "Tất cả nhóm lớn");
+            updateTestSubtypeOptions();
+        }
+
+        function updateTestSubtypeOptions() {
+            const subject = document.getElementById("testSubjectFilter")?.value || "ALL";
+            const category = document.getElementById("testCategoryFilter")?.value || "ALL";
+            populateSelect(document.getElementById("testSubtypeFilter"), getSubtypesFor(subject, category), "ALL", "Tất cả dạng nhỏ");
+        }
+
+        function setSelectApprox(selectId, wantedValue) {
+            const select = document.getElementById(selectId);
+            if (!select || !wantedValue) return false;
+            const target = normalizeText(wantedValue);
+            const options = Array.from(select.options);
+            const option = options.find(opt => normalizeText(opt.value) === target || normalizeText(opt.textContent) === target)
+                || options.find(opt => {
+                    const val = normalizeText(opt.value || opt.textContent);
+                    return target.length > 3 && (val.includes(target) || target.includes(val));
+                });
+            if (option) {
+                select.value = option.value;
+                return true;
+            }
+            return false;
+        }
+
+        function renderRichText(str) {
+            return escapeHTML(str || "").replace(/\n/g, "<br>");
+        }
+
+        function splitImageMarkers(text) {
+            const urls = [];
+            const clean = String(text || "").replace(/\[img:(https?:\/\/[^\]\s]+)\]/gi, function(_, url) {
+                urls.push(url);
+                return "";
+            }).trim();
+            return { clean, urls };
+        }
+
+        function renderImagesFromMarkers(urls) {
+            return (urls || []).map(url => `<a href="${escapeHTML(url)}" target="_blank"><img class="inline-option-img" src="${escapeHTML(url)}" alt="Option image"></a>`).join("");
+        }
+
+        function extractDesmosUrl(raw) {
+            let value = String(raw || "").trim();
+            if (!value) return "";
+            const iframeMatch = value.match(/src=["']([^"']+)["']/i);
+            if (iframeMatch) value = iframeMatch[1].trim();
+            value = value.replace(/&amp;/g, "&");
+            if (!/^https:\/\/(www\.)?desmos\.com\//i.test(value)) return "";
+            if (!/[?&]embed(?:[=&]|$)/i.test(value)) {
+                value += value.includes("?") ? "&embed" : "?embed";
+            }
+            return value;
+        }
+
+        function splitDesmosMarkers(text) {
+            const urls = [];
+            const clean = String(text || "").replace(/\[desmos:(https:\/\/(?:www\.)?desmos\.com\/[^\]\s]+)\]/gi, function(_, url) {
+                urls.push(extractDesmosUrl(url));
+                return "";
+            }).trim();
+            return { clean, urls: urls.filter(Boolean) };
+        }
+
+        function renderDesmosEmbeds(urls) {
+            return (urls || []).map((url, idx) => {
+                return `<div class="desmos-embed-box">
+                    <div class="desmos-embed-title">📈 Desmos Graph ${idx + 1}<a href="${escapeHTML(url)}" target="_blank" style="color: var(--bluebook-blue); font-size:0.85em;">Mở lớn</a></div>
+                    <iframe class="desmos-iframe" src="${escapeHTML(url)}" loading="lazy" allowfullscreen></iframe>
+                </div>`;
+            }).join("");
+        }
+
+        function buildQuestionTextForSave() {
+            const base = document.getElementById('question_text').value.trim();
+            const rawDesmos = document.getElementById('desmos_embed')?.value || "";
+            const url = extractDesmosUrl(rawDesmos);
+            if (rawDesmos.trim() && !url) {
+                throw new Error("Link Desmos không hợp lệ. Hãy dán link/iframe từ desmos.com.");
+            }
+            return url ? `${base}\n\n[desmos:${url}]` : base;
+        }
+
+        function renderLogOption(letter, text) {
+            const parsed = splitImageMarkers(text);
+            return `<div style="margin-bottom: 8px;"><strong>${letter}:</strong> ${renderRichText(parsed.clean)}${renderImagesFromMarkers(parsed.urls)}</div>`;
+        }
+
+        function renderQuestionWithImage(log) {
+            const parsedDesmos = splitDesmosMarkers(log.question_text);
+            let questionContent = `<strong>${renderRichText(parsedDesmos.clean)}</strong>${renderDesmosEmbeds(parsedDesmos.urls)}`;
+            if (log.image_url) {
+                questionContent = `<a href="${escapeHTML(log.image_url)}" target="_blank"><img src="${escapeHTML(log.image_url)}" style="max-width: 100%; max-height: 120px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #ddd; cursor: zoom-in;" alt="Đồ thị/Bảng biểu"></a><br>` + questionContent;
+            }
+            return questionContent;
+        }
+
+        function typesetMath(container) {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise(container ? [container] : undefined).catch(() => {});
+            }
+        }
+
+        function fillQuickPasteTemplate() {
+            document.getElementById("quickPasteBox").value =
+`SUBJECT: Math
+CATEGORY: Algebra
+SUBTYPE: Linear Equations
+SOURCE: PT / Drill
+DESMOS: https://www.desmos.com/calculator?embed
+QUESTION:
+Solve for \\(x\\): \\(\\frac{x+3}{2}=7\\)
+
+A: \\(x=8\\)
+B: \\(x=11\\)
+C: \\(x=14\\)
+D: \\(x=17\\)
+
+WRONG: A
+KEY: B
+WHY I CHOSE WRONG:
+Tui quên nhân 2 cho cả vế.
+WHY WRONG:
+A chưa thỏa phương trình.
+WHY CORRECT:
+\\(\\frac{11+3}{2}=7\\).
+TAKEAWAY:
+Gặp phân số thì khử mẫu trước rồi mới chuyển vế.`;
+        }
+
+        function parseQuickFields(raw) {
+            const alias = {
+                "subject": "subject", "section": "subject", "mon": "subject", "môn": "subject",
+                "category": "category", "domain": "category", "nhom": "category", "nhóm": "category",
+                "subtype": "subtype", "skill": "subtype", "type": "subtype", "dang": "subtype", "dạng": "subtype",
+                "source": "source", "link": "source",
+                "desmos": "desmos", "desmos link": "desmos", "desmos embed": "desmos", "graph": "desmos",
+                "question": "question", "cau hoi": "question", "câu hỏi": "question",
+                "a": "a", "option a": "a",
+                "b": "b", "option b": "b",
+                "c": "c", "option c": "c",
+                "d": "d", "option d": "d",
+                "wrong": "wrong", "my answer": "wrong", "dap an chon sai": "wrong", "đáp án chọn sai": "wrong",
+                "key": "key", "correct": "key", "answer": "key", "dap an dung": "key", "đáp án đúng": "key",
+                "why i chose wrong": "why_i_chose_wrong", "tai sao tui lai chon sai": "why_i_chose_wrong", "tại sao tui lại chọn sai": "why_i_chose_wrong",
+                "why wrong": "why_wrong", "tai sao no sai": "why_wrong", "tại sao nó sai": "why_wrong",
+                "why correct": "why_correct", "tai sao dung": "why_correct", "tại sao đúng": "why_correct",
+                "takeaway": "takeaway", "rule": "takeaway", "bai hoc": "takeaway", "bài học": "takeaway"
+            };
+            const fields = {};
+            let current = null;
+            raw.split(/\r?\n/).forEach(line => {
+                const match = line.match(/^\s*([^:]{1,45})\s*:\s*(.*)$/);
+                if (match) {
+                    const key = alias[normalizeText(match[1])];
+                    if (key) {
+                        current = key;
+                        fields[current] = fields[current] ? fields[current] + "\n" + match[2] : match[2];
+                        return;
+                    }
+                }
+                if (current) fields[current] += (fields[current] ? "\n" : "") + line;
+            });
+            Object.keys(fields).forEach(k => fields[k] = fields[k].trim());
+            return fields;
+        }
+
+        function parseQuickPaste() {
+            const raw = document.getElementById("quickPasteBox").value;
+            if (!raw.trim()) {
+                alert("Chưa có nội dung để đổ vào form.");
+                return;
+            }
+            const f = parseQuickFields(raw);
+
+            if (f.subject) {
+                document.getElementById("question_subject").value = normalizeText(f.subject).includes("math") ? "Math" : "Verbal";
+            }
+            updateQuestionCategoryOptions();
+
+            if (f.category) setSelectApprox("question_category", f.category);
+            updateQuestionSubtypeOptions();
+
+            if (f.subtype) setSelectApprox("question_subtype", f.subtype);
+            syncQuestionTypeField();
+
+            if (f.source) document.getElementById("source_link").value = f.source;
+            if (f.desmos) document.getElementById("desmos_embed").value = f.desmos;
+            if (f.question) document.getElementById("question_text").value = f.question;
+            if (f.a) document.getElementById("option_a").value = f.a;
+            if (f.b) document.getElementById("option_b").value = f.b;
+            if (f.c) document.getElementById("option_c").value = f.c;
+            if (f.d) document.getElementById("option_d").value = f.d;
+            if (f.wrong) document.getElementById("wrong_answer").value = f.wrong.trim().toUpperCase();
+            if (f.key) document.getElementById("correct_answer").value = f.key.trim().toUpperCase();
+            if (f.why_i_chose_wrong) document.getElementById("why_i_chose_wrong").value = f.why_i_chose_wrong;
+            if (f.why_wrong) document.getElementById("why_wrong").value = f.why_wrong;
+            if (f.why_correct) document.getElementById("why_correct").value = f.why_correct;
+            if (f.takeaway) document.getElementById("takeaway").value = f.takeaway;
         }
 
         // Logic ẩn/hiện màn hình chính
@@ -449,24 +889,11 @@
             }
         }
 
-        // Dropdown Logic
-        const dropdownSelected = document.getElementById('dropdownSelected');
-        const dropdownOptions = document.getElementById('dropdownOptions');
-        const hiddenInput = document.getElementById('question_type');
-
-        dropdownSelected.addEventListener('click', function(e) { dropdownOptions.classList.toggle('show'); e.stopPropagation(); });
-        document.querySelectorAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', function() {
-                hiddenInput.value = this.getAttribute('data-value');
-                dropdownSelected.innerHTML = '';
-                const clonedNode = this.cloneNode(true);
-                clonedNode.classList.remove('dropdown-item'); clonedNode.classList.add('selected-tag');
-                dropdownSelected.appendChild(clonedNode);
-                dropdownOptions.classList.remove('show');
-            });
-        });
-        document.addEventListener('click', function(e) {
-            if (!dropdownSelected.contains(e.target) && !dropdownOptions.contains(e.target)) dropdownOptions.classList.remove('show');
+        // Khởi tạo bộ phân loại Math / Verbal
+        document.addEventListener("DOMContentLoaded", function() {
+            updateQuestionCategoryOptions();
+            updateTableCategoryOptions();
+            updateTestCategoryOptions();
         });
 
         // Supabase Init
@@ -483,9 +910,9 @@
         const tableBody = document.getElementById('logTableBody');
         async function fetchLogs() {
             tableBody.innerHTML = '<tr><td colspan="12" style="text-align: center; padding: 30px; font-weight: bold; color: var(--border-pink);">🌸 Đang tải dữ liệu...</td></tr>';
-            
+
             const { data, error } = await supabaseClient.from('logs').select('*').neq('question_type', 'VOCAB').order('date_done', { ascending: false });
-            
+
             if (error) {
                 console.error("Lỗi lấy dữ liệu:", error);
                 tableBody.innerHTML = `<tr><td colspan="12" style="text-align: center; padding: 30px; color: red;">Lỗi tải dữ liệu. Lỗi: ${error.message}</td></tr>`;
@@ -498,10 +925,10 @@
                 document.getElementById('dashboardContainer').style.display = 'none';
                 return; 
             }
-            
+
             globalLogsData = data; 
             document.getElementById('dashboardContainer').style.display = 'block';
-            
+
             try { renderChart(); } catch(e) {}
 
             tableBody.innerHTML = '';
@@ -511,6 +938,8 @@
             let htmlBuffer = '';
             data.forEach(log => {
                 try {
+                    const parts = getTypeParts(log.question_type);
+
                     let statusBadge = `<span class="status-badge" style="background:#eee; color:#666;">Chưa ôn</span>`;
                     if(log.review_status === "Đã ôn - Đúng") statusBadge = `<span class="status-badge" style="background:#D4EDDA; color:#155724;">✅ Đã ôn (Đúng)</span>`;
                     if(log.review_status === "Đã ôn - Sai") statusBadge = `<span class="status-badge" style="background:#F8D7DA; color:#721c24;">❌ Đã ôn (Sai)</span>`;
@@ -523,55 +952,62 @@
                             const diffTime = today.getTime() - logDate.getTime();
                             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                             diffDaysForFilter = diffDays;
-                            
+
                             if (diffDays === 0) timeAgoDisplay = "Hôm nay";
                             else if (diffDays > 0) timeAgoDisplay = `${diffDays} ngày trước`;
                             else timeAgoDisplay = "Ở tương lai?"; 
                         }
                     }
 
-                    let questionContent = `<strong>${escapeHTML(log.question_text)}</strong>`;
-                    if (log.image_url) {
-                        questionContent = `<a href="${escapeHTML(log.image_url)}" target="_blank"><img src="${escapeHTML(log.image_url)}" style="max-width: 100%; max-height: 120px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #ddd; cursor: zoom-in;" alt="Đồ thị/Bảng biểu"></a><br>` + questionContent;
-                    }
+                    const questionContent = renderQuestionWithImage(log);
 
-                    htmlBuffer += `<tr data-type="${escapeHTML(log.question_type)}" data-diff="${diffDaysForFilter}">
+                    htmlBuffer += `<tr data-subject="${escapeHTML(parts.subject)}" data-category="${escapeHTML(parts.category)}" data-type="${escapeHTML(parts.subtype)}" data-full-type="${escapeHTML(log.question_type)}" data-diff="${diffDaysForFilter}">
                         <td class="col-status">${statusBadge}</td>
                         <td class="col-date">${escapeHTML(log.date_done)}</td>
                         <td class="col-time-ago">${timeAgoDisplay}</td>
-                        <td class="col-type"><span class="selected-tag ${getTagClass(log.question_type)}">${escapeHTML(log.question_type)}</span></td>
+                        <td class="col-type">${renderTypeBadge(log.question_type)}</td>
                         <td class="col-question">${questionContent}</td>
                         <td class="col-options">
-                            <div style="margin-bottom: 5px;"><strong>A:</strong> ${escapeHTML(log.option_a)}</div>
-                            <div style="margin-bottom: 5px;"><strong>B:</strong> ${escapeHTML(log.option_b)}</div>
-                            <div style="margin-bottom: 5px;"><strong>C:</strong> ${escapeHTML(log.option_c)}</div>
-                            <div><strong>D:</strong> ${escapeHTML(log.option_d)}</div>
+                            ${renderLogOption('A', log.option_a)}
+                            ${renderLogOption('B', log.option_b)}
+                            ${renderLogOption('C', log.option_c)}
+                            ${renderLogOption('D', log.option_d)}
                         </td>
                         <td class="col-ans" style="color: #dc3545;">${escapeHTML(log.wrong_answer)}</td>
-                        <td class="col-why-chose" style="background-color: #fffafb; color: #856404; font-style: italic;">${escapeHTML(log.why_i_chose_wrong || 'Chưa ghi chú')}</td>
+                        <td class="col-why-chose" style="background-color: #fffafb; color: #856404; font-style: italic;">${renderRichText(log.why_i_chose_wrong || 'Chưa ghi chú')}</td>
                         <td class="col-ans" style="color: #28a745;">${escapeHTML(log.correct_answer)}</td>
-                        <td class="col-explain" style="color: #28a745; background-color: #f9fff9;">${escapeHTML(log.why_correct)}</td>
-                        <td class="col-explain" style="color: #dc3545; background-color: #fffafb;">${escapeHTML(log.why_wrong)}</td>
-                        <td class="col-explain" style="background-color: #fcf8fa; font-weight: 500;">${escapeHTML(log.takeaway)}</td>
+                        <td class="col-explain" style="color: #28a745; background-color: #f9fff9;">${renderRichText(log.why_correct)}</td>
+                        <td class="col-explain" style="color: #dc3545; background-color: #fffafb;">${renderRichText(log.why_wrong)}</td>
+                        <td class="col-explain" style="background-color: #fcf8fa; font-weight: 500;">${renderRichText(log.takeaway)}</td>
                     </tr>`;
-                } catch (err) {}
+                } catch (err) {
+                    console.warn("Bỏ qua một dòng lỗi:", err);
+                }
             });
-            
+
             tableBody.innerHTML = htmlBuffer;
             filterTable();
+            typesetMath(document.getElementById('logTableBody'));
         }
 
         function filterTable() {
-            const typeFilter = document.getElementById('tableTypeFilter').value;
-            const timeFilter = document.getElementById('tableTimeFilter').value;
+            const subjectFilter = document.getElementById('tableSubjectFilter')?.value || 'ALL';
+            const categoryFilter = document.getElementById('tableCategoryFilter')?.value || 'ALL';
+            const typeFilter = document.getElementById('tableTypeFilter')?.value || 'ALL';
+            const timeFilter = document.getElementById('tableTimeFilter')?.value || 'ALL';
             const rows = document.querySelectorAll('#logTableBody tr');
-            
+
             rows.forEach(row => {
+                const rowSubject = row.getAttribute('data-subject');
+                const rowCategory = row.getAttribute('data-category');
                 const rowType = row.getAttribute('data-type');
                 const rowDiffStr = row.getAttribute('data-diff');
                 const rowDiff = rowDiffStr !== "" ? parseInt(rowDiffStr) : NaN;
-                
-                let typeMatch = (typeFilter === 'ALL' || rowType === typeFilter);
+
+                const subjectMatch = (subjectFilter === 'ALL' || rowSubject === subjectFilter);
+                const categoryMatch = (categoryFilter === 'ALL' || rowCategory === categoryFilter);
+                const typeMatch = (typeFilter === 'ALL' || rowType === typeFilter);
+
                 let timeMatch = true;
                 if (timeFilter !== 'ALL') {
                     if (timeFilter === 'today') timeMatch = (rowDiff === 0);
@@ -580,8 +1016,8 @@
                         timeMatch = (!isNaN(rowDiff) && rowDiff >= 0 && rowDiff <= daysLimit);
                     }
                 }
-                
-                row.style.display = (typeMatch && timeMatch) ? '' : 'none';
+
+                row.style.display = (subjectMatch && categoryMatch && typeMatch && timeMatch) ? '' : 'none';
             });
         }
 
@@ -633,72 +1069,91 @@
             });
         }
 
+        async function uploadImageFile(file, prefix) {
+            if (!file) return null;
+            const fileExt = file.name.split('.').pop();
+            const safePrefix = prefix || 'image';
+            const fileName = `${safePrefix}_${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const { error: uploadError } = await supabaseClient.storage.from('question_images').upload(fileName, file);
+
+            if (uploadError) throw uploadError;
+            const { data: publicUrlData } = supabaseClient.storage.from('question_images').getPublicUrl(fileName);
+            return publicUrlData.publicUrl;
+        }
+
+        async function getOptionValueWithImage(optionInputId, imageInputId, letter) {
+            let value = document.getElementById(optionInputId).value || "";
+            const file = document.getElementById(imageInputId)?.files?.[0];
+            if (file) {
+                const url = await uploadImageFile(file, `option_${letter}`);
+                value = `${value.trim()}\n[img:${url}]`.trim();
+            }
+            return value;
+        }
+
         // Đẩy Log Câu Hỏi Lên Database
         document.getElementById('logForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('submitBtn'); btn.disabled = true; btn.textContent = 'Đang tải lên... ⏳';
-            
-            let uploadedImageUrl = null;
-            const fileInput = document.getElementById('question_image');
-            const file = fileInput.files[0];
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Đang tải lên... ⏳';
 
-            if (file) {
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-                const { data: uploadData, error: uploadError } = await supabaseClient.storage.from('question_images').upload(fileName, file);
+            try {
+                syncQuestionTypeField();
 
-                if (uploadError) {
-                    alert("Lỗi tải ảnh lên: " + uploadError.message);
-                    btn.disabled = false; btn.textContent = 'LOG IT! 🌸';
-                    return;
+                let uploadedImageUrl = null;
+                const questionFile = document.getElementById('question_image').files[0];
+                if (questionFile) uploadedImageUrl = await uploadImageFile(questionFile, 'question');
+
+                const logData = {
+                    date_done: document.getElementById('date_done').value, 
+                    source_link: document.getElementById('source_link').value,
+                    question_type: document.getElementById('question_type').value, 
+                    question_text: buildQuestionTextForSave(),
+                    image_url: uploadedImageUrl, 
+                    option_a: await getOptionValueWithImage('option_a', 'option_a_image', 'A'), 
+                    option_b: await getOptionValueWithImage('option_b', 'option_b_image', 'B'),
+                    option_c: await getOptionValueWithImage('option_c', 'option_c_image', 'C'), 
+                    option_d: await getOptionValueWithImage('option_d', 'option_d_image', 'D'),
+                    wrong_answer: document.getElementById('wrong_answer').value.trim().toUpperCase(), 
+                    why_i_chose_wrong: document.getElementById('why_i_chose_wrong').value,
+                    why_wrong: document.getElementById('why_wrong').value, 
+                    correct_answer: document.getElementById('correct_answer').value.trim().toUpperCase(),
+                    why_correct: document.getElementById('why_correct').value, 
+                    takeaway: document.getElementById('takeaway').value, 
+                    review_status: 'Chưa ôn'
+                };
+
+                const { error } = await supabaseClient.from('logs').insert([logData]);
+
+                if (!error) {
+                    document.getElementById('logForm').reset();
+                    updateQuestionCategoryOptions();
+                    document.getElementById('successMessage').style.display = 'block';
+                    setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000); 
+                    fetchLogs();
+                } else {
+                    alert("Lỗi lưu dữ liệu: " + error.message);
                 }
-                const { data: publicUrlData } = supabaseClient.storage.from('question_images').getPublicUrl(fileName);
-                uploadedImageUrl = publicUrlData.publicUrl;
+            } catch (err) {
+                alert("Lỗi tải ảnh hoặc lưu dữ liệu: " + (err.message || err));
             }
 
-            const logData = {
-                date_done: document.getElementById('date_done').value, 
-                source_link: document.getElementById('source_link').value,
-                question_type: document.getElementById('question_type').value, 
-                question_text: document.getElementById('question_text').value,
-                image_url: uploadedImageUrl, 
-                option_a: document.getElementById('option_a').value, 
-                option_b: document.getElementById('option_b').value,
-                option_c: document.getElementById('option_c').value, 
-                option_d: document.getElementById('option_d').value,
-                wrong_answer: document.getElementById('wrong_answer').value, 
-                why_i_chose_wrong: document.getElementById('why_i_chose_wrong').value,
-                why_wrong: document.getElementById('why_wrong').value, 
-                correct_answer: document.getElementById('correct_answer').value.toUpperCase(),
-                why_correct: document.getElementById('why_correct').value, 
-                takeaway: document.getElementById('takeaway').value, 
-                review_status: 'Chưa ôn'
-            };
-
-            const { error } = await supabaseClient.from('logs').insert([logData]);
-            btn.disabled = false; btn.textContent = 'LOG IT! 🌸';
-            
-            if (!error) {
-                document.getElementById('logForm').reset(); 
-                document.getElementById('dropdownSelected').innerHTML = '<span>Select type...</span>';
-                document.getElementById('question_type').value = ''; 
-                document.getElementById('successMessage').style.display = 'block';
-                setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000); 
-                fetchLogs();
-            } else { alert("Lỗi lưu dữ liệu: " + error.message); }
+            btn.disabled = false;
+            btn.textContent = 'LOG IT! 🌸';
         });
 
-        // Test Tools: highlight nhiều màu, eliminate đáp án, note
+        // Test Tools: highlight nhiều màu/tự chọn, eliminate đáp án, note
         const qTextNode = document.getElementById('quizQuestionText');
-        let activeHighlightColor = 'yellow';
+        let activeHighlightColor = '#FFF176';
         let eliminateMode = false;
 
-        function setHighlightColor(color) {
-            activeHighlightColor = color;
+        function setHighlightColor(color, sourceEl) {
+            activeHighlightColor = color || '#FFF176';
             document.querySelectorAll('.hl-color-btn').forEach(btn => btn.classList.remove('active'));
-            const btnMap = { yellow: 'hlBtnYellow', green: 'hlBtnGreen', blue: 'hlBtnBlue', pink: 'hlBtnPink' };
-            const activeBtn = document.getElementById(btnMap[color]);
-            if (activeBtn) activeBtn.classList.add('active');
+            if (sourceEl && sourceEl.classList && sourceEl.classList.contains('hl-color-btn')) {
+                sourceEl.classList.add('active');
+            }
         }
 
         qTextNode.addEventListener('mouseup', () => {
@@ -710,7 +1165,8 @@
             if (!qTextNode.contains(common) && common !== qTextNode) return;
 
             const span = document.createElement('span');
-            span.className = `highlighted hl-${activeHighlightColor}`;
+            span.className = 'highlighted';
+            span.style.backgroundColor = activeHighlightColor;
             try {
                 range.surroundContents(span);
             } catch(e) {
@@ -729,6 +1185,7 @@
                 span.parentNode.replaceChild(textNode, span);
             });
             qTextNode.normalize();
+            typesetMath(qTextNode);
         }
 
         function toggleEliminateMode() {
@@ -766,8 +1223,15 @@
             pad.style.display = pad.style.display === 'block' ? 'none' : 'block';
         }
 
+        function toggleDesmosScratch() {
+            const panel = document.getElementById('desmosScratchPanel');
+            if (!panel) return;
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        }
+
         function renderOptionHTML(letter, text) {
-            return `<span class="quiz-option-text"><strong>${letter}.</strong> ${escapeHTML(text)}</span><span class="eliminate-choice-btn" onclick="toggleEliminateChoice(event, '${letter}')" title="Loại đáp án ${letter}">✕</span>`;
+            const parsed = splitImageMarkers(text);
+            return `<span class="quiz-option-text"><strong>${letter}.</strong> ${renderRichText(parsed.clean)}${renderImagesFromMarkers(parsed.urls)}</span><span class="eliminate-choice-btn" onclick="toggleEliminateChoice(event, '${letter}')" title="Loại đáp án ${letter}">✕</span>`;
         }
 
         /* =========================================================
@@ -808,22 +1272,36 @@
 
 
         async function startTest() {
+            const subject = document.getElementById('testSubjectFilter').value;
             const category = document.getElementById('testCategoryFilter').value;
+            const subtype = document.getElementById('testSubtypeFilter').value;
             const status = document.getElementById('testStatusFilter').value;
             const limit = parseInt(document.getElementById('testQuestionCount').value);
             const btn = document.querySelector('.test-setup-card .submit-btn');
             btn.textContent = "Đang soạn đề..."; btn.disabled = true;
 
             let query = supabaseClient.from('logs').select('*').neq('question_type', 'VOCAB'); 
-            if (category !== 'ALL') query = query.eq('question_type', category);
             if (status !== 'ALL') query = query.eq('review_status', status); 
-            
+
             const { data, error } = await query;
             btn.textContent = "BẮT ĐẦU TEST! 🚀"; btn.disabled = false;
 
             if (error || !data || data.length === 0) { alert("Sập hầm! Kho hông có câu nào thỏa mãn điều kiện lọc."); return; }
 
-            currentQuizList = data.sort(() => 0.5 - Math.random()).slice(0, limit);
+            const filteredData = data.filter(item => {
+                const parts = getTypeParts(item.question_type);
+                const subjectMatch = subject === 'ALL' || parts.subject === subject;
+                const categoryMatch = category === 'ALL' || parts.category === category;
+                const subtypeMatch = subtype === 'ALL' || parts.subtype === subtype;
+                return subjectMatch && categoryMatch && subtypeMatch;
+            });
+
+            if (!filteredData.length) {
+                alert("Kho có dữ liệu nhưng không có câu nào đúng bộ lọc Math/Verbal này.");
+                return;
+            }
+
+            currentQuizList = filteredData.sort(() => 0.5 - Math.random()).slice(0, limit);
             currentQuestionIndex = 0;
 
             document.getElementById('testSetupCard').style.display = 'none';
@@ -833,19 +1311,23 @@
 
         function loadQuizQuestion() {
             const q = currentQuizList[currentQuestionIndex];
+            const parts = getTypeParts(q.question_type);
             document.getElementById('quizExplanation').style.display = 'none';
             document.getElementById('btnNextQuiz').style.display = 'none';
             document.getElementById('scratchpad').value = ''; 
             startQuestionTimer();
-            
+
             document.querySelectorAll('.quiz-option-btn').forEach(btn => {
                 btn.classList.remove('correct', 'wrong', 'eliminated'); btn.disabled = false;
             });
 
             document.getElementById('quizProgress').textContent = `Câu ${currentQuestionIndex + 1} / ${currentQuizList.length}`;
-            document.getElementById('quizCategoryTag').textContent = q.question_type;
+            document.getElementById('quizCategoryTag').innerHTML = `${escapeHTML(parts.subject)} · ${escapeHTML(parts.category)} · ${escapeHTML(parts.subtype)}`;
             document.getElementById('quizCategoryTag').className = `selected-tag ${getTagClass(q.question_type)}`;
-            qTextNode.innerHTML = escapeHTML(q.question_text); 
+            const parsedQuizQuestion = splitDesmosMarkers(q.question_text);
+            qTextNode.innerHTML = renderRichText(parsedQuizQuestion.clean);
+            const quizDesmosArea = document.getElementById('quizDesmosArea');
+            if (quizDesmosArea) quizDesmosArea.innerHTML = renderDesmosEmbeds(parsedQuizQuestion.urls);
 
             const quizImageNode = document.getElementById('quizQuestionImage');
             if(q.image_url) { quizImageNode.src = escapeHTML(q.image_url); quizImageNode.style.display = 'block'; } 
@@ -855,6 +1337,7 @@
             document.getElementById('btnOptB').innerHTML = renderOptionHTML('B', q.option_b);
             document.getElementById('btnOptC').innerHTML = renderOptionHTML('C', q.option_c);
             document.getElementById('btnOptD').innerHTML = renderOptionHTML('D', q.option_d);
+            typesetMath(document.getElementById('quizCard'));
         }
 
         async function checkAnswer(selectedOption) {
@@ -875,8 +1358,8 @@
                 expDiv.classList.add('exp-correct-mode');
                 expDiv.innerHTML = `<h4 style="color: #28a745;">🎉 CHÍNH XÁC! Quá dữ luôn!</h4>
                                     <p><strong>Thời gian làm câu này:</strong> ⏱ ${spentTimeText}</p>
-                                    <p><strong>Tại sao câu này đúng:</strong> ${escapeHTML(q.why_correct) || "Bà chưa nhập lý do câu này đúng."}</p>
-                                    <p><strong>Takeaway nhắc nhẹ:</strong> ${escapeHTML(q.takeaway) || ""}</p>`;
+                                    <p><strong>Tại sao câu này đúng:</strong> ${q.why_correct ? renderRichText(q.why_correct) : "Bà chưa nhập lý do câu này đúng."}</p>
+                                    <p><strong>Takeaway nhắc nhẹ:</strong> ${q.takeaway ? renderRichText(q.takeaway) : ""}</p>`;
                 newStatus = "Đã ôn - Đúng";
             } else {
                 selectedBtn.classList.add('wrong');
@@ -888,10 +1371,10 @@
                 expDiv.innerHTML = `<h4 style="color: #dc3545;">❌ ÔI SAI RỒI! Nhìn kỹ lại nha:</h4>
                                     <p><strong>Thời gian làm câu này:</strong> ⏱ ${spentTimeText}</p>
                                     <p><strong>Đáp án đúng phải là:</strong> ${correctOption}</p>
-                                    <p style="color: #155724; background-color: #d4edda; padding: 10px; border-radius: 4px; margin-bottom: 10px;"><strong>Tại sao ${correctOption} lại ĐÚNG:</strong> <br>${escapeHTML(q.why_correct) || "Bà chưa nhập lý do câu này đúng."}</p>
-                                    <p style="color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 4px; margin-bottom: 10px;"><strong>Tại sao bẫy này SAI:</strong> <br>${escapeHTML(q.why_wrong) || "Bà chưa vạch trần bẫy câu này."}</p>
+                                    <p style="color: #155724; background-color: #d4edda; padding: 10px; border-radius: 4px; margin-bottom: 10px;"><strong>Tại sao ${correctOption} lại ĐÚNG:</strong> <br>${q.why_correct ? renderRichText(q.why_correct) : "Bà chưa nhập lý do câu này đúng."}</p>
+                                    <p style="color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 4px; margin-bottom: 10px;"><strong>Tại sao bẫy này SAI:</strong> <br>${q.why_wrong ? renderRichText(q.why_wrong) : "Bà chưa vạch trần bẫy câu này."}</p>
                                     <div style="background-color: white; padding: 10px; border-radius: 5px; margin-top: 15px; border: 1px solid #F7D6E0;">
-                                        <strong>💡 BÀI HỌC SƯƠNG MÁU (Takeaway):</strong><br>${escapeHTML(q.takeaway) || "Cần chú ý kỹ hơn!"}
+                                        <strong>💡 BÀI HỌC SƯƠNG MÁU (Takeaway):</strong><br>${q.takeaway ? renderRichText(q.takeaway) : "Cần chú ý kỹ hơn!"}
                                     </div>`;
                 newStatus = "Đã ôn - Sai";
             }
@@ -901,6 +1384,7 @@
             const nextBtn = document.getElementById('btnNextQuiz');
             nextBtn.style.display = 'block';
             nextBtn.textContent = (currentQuestionIndex === currentQuizList.length - 1) ? "HOÀN THÀNH TEST! 🎉" : "CÂU TIẾP THEO ➡";
+            typesetMath(expDiv);
         }
 
         function nextQuestion() {
