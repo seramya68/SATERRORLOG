@@ -185,6 +185,50 @@
         .btn-easy { background-color: #D4EDDA; color: #155724; }
         .rate-btn:hover { opacity: 0.8; transform: translateY(-2px); }
 
+
+        /* --- MAIN STUDY DASHBOARD + DIARY --- */
+        .main-dashboard { width: 100%; max-width: 1120px; margin: 0 auto 26px; display: grid; grid-template-columns: 1.1fr 0.95fr 0.95fr; gap: 16px; align-items: stretch; }
+        .dash-card { background: white; border: 2px solid var(--border-pink); border-radius: 18px; padding: 18px; box-shadow: 0 4px 15px rgba(233, 109, 157, 0.18); min-width: 0; overflow: hidden; }
+        .dash-card h3 { margin: 0 0 10px 0; color: var(--border-pink); font-size: 1.05em; }
+        .exam-date-pill { display: inline-flex; align-items: center; gap: 6px; background: #FFF0F6; color: var(--border-pink); border: 1px solid var(--header-pink); border-radius: 999px; padding: 6px 10px; font-weight: 800; font-size: 0.88em; }
+        .exam-days-number { font-size: clamp(2.3rem, 6vw, 4.4rem); line-height: 1; font-weight: 900; color: var(--bluebook-blue); margin: 10px 0 4px; letter-spacing: -1px; }
+        .exam-days-label { color: #666; font-weight: 700; }
+        .exam-progress-wrap { margin-top: 14px; }
+        .exam-progress-bar { width: 100%; height: 12px; border-radius: 999px; background: #F1F3F4; overflow: hidden; border: 1px solid #E7E7E7; }
+        .exam-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #E96D9D, #005A9C); border-radius: 999px; transition: width 0.4s ease; }
+        .exam-progress-text { margin-top: 6px; font-size: 0.82em; color: #777; line-height: 1.4; }
+        .dash-mini-line { font-size: 0.92em; color: #666; line-height: 1.55; margin: 6px 0; }
+        .dash-big-value { font-size: 1.75em; font-weight: 900; color: var(--border-pink); margin: 6px 0 2px; }
+        .dash-action-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .dash-action-btn { border: 1px solid var(--border-pink); background: var(--border-pink); color: white; border-radius: 10px; padding: 9px 12px; font-weight: 800; cursor: pointer; }
+        .dash-action-btn.secondary { background: white; color: var(--border-pink); }
+        .dash-action-btn:hover { opacity: 0.88; }
+        .diary-layout { width: 100%; max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: 20px; align-items: start; }
+        .diary-card { background: white; border: 2px solid var(--border-pink); border-radius: 16px; padding: 22px; box-shadow: 0 4px 15px rgba(233, 109, 157, 0.18); min-width: 0; }
+        .diary-card h2, .diary-card h3 { color: var(--border-pink); margin-top: 0; }
+        .diary-form { display: flex; flex-direction: column; gap: 14px; }
+        .diary-grid-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+        .rating-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; }
+        .rating-pill { min-width: 58px; text-align: center; background: #FFF0F6; border: 1px solid var(--header-pink); color: var(--border-pink); font-weight: 900; border-radius: 999px; padding: 8px 10px; }
+        .diary-card input[type="range"] { width: 100%; accent-color: var(--border-pink); }
+        .diary-save-btn { background: var(--border-pink); color: white; border: none; border-radius: 10px; padding: 13px 16px; font-weight: 900; cursor: pointer; font-size: 1em; }
+        .diary-save-btn:hover { background: #D15A8B; }
+        .diary-message { display: none; padding: 10px; border-radius: 10px; background: var(--success-color); color: #155724; font-weight: 800; text-align: center; }
+        .diary-history-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: 2px solid var(--header-pink); padding-bottom: 10px; margin-bottom: 12px; }
+        .diary-history-list { display: flex; flex-direction: column; gap: 12px; max-height: 720px; overflow-y: auto; padding-right: 4px; }
+        .diary-entry { border: 1px solid #F3C9D8; background: #FFF9FC; border-radius: 14px; padding: 14px; }
+        .diary-entry-head { display: flex; justify-content: space-between; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+        .diary-entry-date { font-weight: 900; color: var(--bluebook-blue); }
+        .diary-entry-rating { background: white; color: var(--border-pink); border: 1px solid var(--header-pink); border-radius: 999px; padding: 5px 10px; font-weight: 900; }
+        .diary-entry-mood { font-weight: 800; color: #666; }
+        .diary-entry-section { margin-top: 8px; line-height: 1.55; }
+        .diary-entry-section strong { color: var(--border-pink); }
+        .diary-empty { padding: 18px; text-align: center; color: #777; border: 1px dashed var(--header-pink); border-radius: 14px; background: #FFF9FC; }
+        .diary-mini-stat-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+        .diary-mini-stat { background: #FFF9FC; border: 1px solid #F3C9D8; border-radius: 12px; padding: 10px; text-align: center; }
+        .diary-mini-stat b { display: block; font-size: 1.25em; color: var(--border-pink); }
+        .diary-mini-stat span { display: block; font-size: 0.78em; color: #777; margin-top: 2px; }
+
         /* --- RESPONSIVE MOBILE FIX --- */
         @media screen and (max-width: 768px) {
             body { padding: 10px; }
@@ -203,6 +247,10 @@
             .quiz-tool-left, .quiz-tool-right { width: 100%; justify-content: center; }
             .quiz-timer-pill { order: -1; width: 100%; box-sizing: border-box; }
             .quiz-option-btn { padding-right: 52px; }
+            .main-dashboard, .diary-layout { grid-template-columns: 1fr; }
+            .diary-grid-two, .diary-mini-stat-row { grid-template-columns: 1fr; }
+            .dash-card, .diary-card { padding: 16px; }
+            .exam-days-number { font-size: 3rem; }
             .vocab-card { padding: 15px; }
             .fc-word { font-size: 1.8em; }
             .fc-meaning { font-size: 1.2em; }
@@ -213,10 +261,44 @@
 
     <h1>🌸 SAT ERROR LOG & VOCAB</h1>
 
+    <div class="main-dashboard" id="mainDashboard">
+        <div class="dash-card exam-count-card">
+            <h3>🎯 SAT Countdown</h3>
+            <span class="exam-date-pill">Ngày thi: 12/09/2026</span>
+            <div class="exam-days-number" id="examDaysLeft">--</div>
+            <div class="exam-days-label" id="examDaysLabel">ngày nữa tới ngày thi</div>
+            <div class="exam-progress-wrap">
+                <div class="exam-progress-bar"><div class="exam-progress-fill" id="examProgressFill"></div></div>
+                <div class="exam-progress-text" id="examProgressText">Đang tính tiến độ...</div>
+            </div>
+        </div>
+        <div class="dash-card">
+            <h3>🌸 Study pulse hôm nay</h3>
+            <div class="dash-mini-line" id="todayDateLine">Hôm nay --</div>
+            <div class="dash-big-value" id="todayDiaryRating">Chưa có diary</div>
+            <div class="dash-mini-line" id="todayDiaryMini">Viết vài dòng để sau này nhìn lại thấy mình đã đi xa cỡ nào.</div>
+            <div class="dash-action-row">
+                <button type="button" class="dash-action-btn" onclick="switchMode('diary')">📔 Viết diary</button>
+                <button type="button" class="dash-action-btn secondary" onclick="switchMode('test')">🧠 Ôn lỗi sai</button>
+            </div>
+        </div>
+        <div class="dash-card">
+            <h3>📔 Diary stats</h3>
+            <div class="dash-mini-line">Tổng số ngày đã ghi</div>
+            <div class="dash-big-value" id="diaryTotalDays">0</div>
+            <div class="dash-mini-line" id="diaryAverageRating">Rating trung bình: --/10</div>
+            <div class="dash-mini-line" id="diaryLatestMood">Mood gần nhất: --</div>
+            <div class="dash-action-row">
+                <button type="button" class="dash-action-btn secondary" onclick="fetchDiaryEntries(true)">🔄 Tải diary</button>
+            </div>
+        </div>
+    </div>
+
     <div class="mode-switcher">
         <button class="mode-btn active" id="btnLogMode" onclick="switchMode('log')">📝 GHI LỖI SAI</button>
         <button class="mode-btn" id="btnTestMode" onclick="switchMode('test')">🧠 ÔN LỖI SAI</button>
         <button class="mode-btn" id="btnVocabMode" onclick="switchMode('vocab')">📚 TỪ VỰNG ANKI</button>
+        <button class="mode-btn" id="btnDiaryMode" onclick="switchMode('diary')">📔 DIARY</button>
     </div>
 
     <div id="logSection" class="app-section active">
@@ -458,6 +540,68 @@
 
             <div class="quiz-explanation" id="quizExplanation"></div>
             <button class="next-btn" id="btnNextQuiz" onclick="nextQuestion()">CÂU TIẾP THEO ➡</button>
+        </div>
+    </div>
+
+    <div id="diarySection" class="app-section">
+        <div class="diary-layout">
+            <div class="diary-card">
+                <h2>📔 Study Diary</h2>
+                <p class="mini-help">Ghi lại hôm nay học ra sao, mood thế nào, có gì vui/buồn, và mình đã làm được gì. Tui lưu vào bảng Supabase hiện tại bằng question_type = DIARY nên không cần thêm cột mới.</p>
+                <form class="diary-form" id="diaryForm">
+                    <div id="diaryMessage" class="diary-message">Đã lưu diary hôm nay 🌸</div>
+                    <div class="diary-grid-two">
+                        <div class="form-group"><label>Ngày</label><input type="date" id="diary_date" required></div>
+                        <div class="form-group">
+                            <label>Mood hôm nay</label>
+                            <select id="diary_mood">
+                                <option value="🌸 Ổn áp">🌸 Ổn áp</option>
+                                <option value="🥳 Vui / tự hào">🥳 Vui / tự hào</option>
+                                <option value="😐 Bình thường">😐 Bình thường</option>
+                                <option value="😵 Mệt / stress">😵 Mệt / stress</option>
+                                <option value="😢 Buồn / nản">😢 Buồn / nản</option>
+                                <option value="🔥 Quyết tâm">🔥 Quyết tâm</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Rating tổng thể hôm nay</label>
+                        <div class="rating-row">
+                            <input type="range" id="diary_rating" min="1" max="10" value="7" oninput="updateDiaryRatingBubble()">
+                            <span class="rating-pill" id="diaryRatingBubble">7/10</span>
+                        </div>
+                    </div>
+                    <div class="diary-grid-two">
+                        <div class="form-group"><label>Hôm nay học/làm được gì?</label><textarea id="diary_study_done" placeholder="VD: Làm 15 câu WIC, ôn linear equations..."></textarea></div>
+                        <div class="form-group"><label>Thành tựu nhỏ hôm nay</label><textarea id="diary_achievement" placeholder="VD: Ít bị trap hơn, đọc kỹ hơn, không bỏ cuộc..."></textarea></div>
+                    </div>
+                    <div class="diary-grid-two">
+                        <div class="form-group"><label>Có gì vui / biết ơn?</label><textarea id="diary_happy" placeholder="Một chuyện làm tui vui hôm nay..."></textarea></div>
+                        <div class="form-group"><label>Có gì buồn / khó / stress?</label><textarea id="diary_hard" placeholder="Điều làm tui mệt hoặc bị kẹt..."></textarea></div>
+                    </div>
+                    <div class="form-group"><label>Nhật ký tự do</label><textarea id="diary_freewrite" style="height:130px;" placeholder="Viết thoải mái, không cần hay. Sau này đọc lại mới thấy hành trình của mình."></textarea></div>
+                    <div class="diary-grid-two">
+                        <div class="form-group"><label>Bài học rút ra</label><textarea id="diary_lesson" placeholder="Ngày mai mình nhớ..."></textarea></div>
+                        <div class="form-group"><label>Kế hoạch ngày mai</label><textarea id="diary_tomorrow" placeholder="Mai làm gì tiếp?"></textarea></div>
+                    </div>
+                    <div class="form-group"><label>Một câu động viên bản thân</label><input type="text" id="diary_gratitude" placeholder="VD: Tui đang tiến bộ, chỉ là chưa thấy rõ thôi."></div>
+                    <button type="submit" class="diary-save-btn" id="diarySaveBtn">LƯU DIARY 🌸</button>
+                </form>
+            </div>
+            <div class="diary-card">
+                <div class="diary-history-head">
+                    <h3>📚 Lịch sử diary</h3>
+                    <button type="button" class="mini-btn" onclick="fetchDiaryEntries(true)">Tải lại</button>
+                </div>
+                <div class="diary-mini-stat-row">
+                    <div class="diary-mini-stat"><b id="diaryPanelTotal">0</b><span>entries</span></div>
+                    <div class="diary-mini-stat"><b id="diaryPanelAvg">--</b><span>avg rating</span></div>
+                    <div class="diary-mini-stat"><b id="diaryPanelBest">--</b><span>best day</span></div>
+                </div>
+                <div id="diaryHistoryList" class="diary-history-list">
+                    <div class="diary-empty">Chưa có diary nào. Viết entry đầu tiên đi bà 🌸</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -868,10 +1012,12 @@ Gặp phân số thì khử mẫu trước rồi mới chuyển vế.`;
             document.getElementById('btnLogMode').classList.remove('active'); 
             document.getElementById('btnTestMode').classList.remove('active');
             document.getElementById('btnVocabMode').classList.remove('active');
+            document.getElementById('btnDiaryMode').classList.remove('active');
 
             document.getElementById('logSection').classList.remove('active'); 
             document.getElementById('testSection').classList.remove('active');
             document.getElementById('vocabSection').classList.remove('active');
+            document.getElementById('diarySection').classList.remove('active');
 
             if (mode === 'log') {
                 document.getElementById('btnLogMode').classList.add('active'); 
@@ -886,6 +1032,11 @@ Gặp phân số thì khử mẫu trước rồi mới chuyển vế.`;
                 document.getElementById('btnVocabMode').classList.add('active'); 
                 document.getElementById('vocabSection').classList.add('active');
                 checkDueVocab(); // Cập nhật số thẻ chờ ôn
+            } else if (mode === 'diary') {
+                document.getElementById('btnDiaryMode').classList.add('active');
+                document.getElementById('diarySection').classList.add('active');
+                setDiaryDefaultDate();
+                fetchDiaryEntries(true);
             }
         }
 
@@ -894,12 +1045,223 @@ Gặp phân số thì khử mẫu trước rồi mới chuyển vế.`;
             updateQuestionCategoryOptions();
             updateTableCategoryOptions();
             updateTestCategoryOptions();
+            initStudyDashboard();
+            setDiaryDefaultDate();
+            updateDiaryRatingBubble();
         });
 
         // Supabase Init
         const SUPABASE_URL = 'https://okkyzqgqyzcwnaccelnj.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ra3l6cWdxeXpjd25hY2NlbG5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4ODIyNTksImV4cCI6MjA5MDQ1ODI1OX0.ncrE4WgXdXlq8zPBstmnxKMkAqy-gdxkgSq0t9oGLxU';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const EXAM_DATE = new Date(2026, 8, 12); // 12/09/2026 theo định dạng Việt Nam: 12 tháng 9 năm 2026
+        let globalDiaryData = [];
+
+        function getLocalDateString(dateObj) {
+            const d = dateObj ? new Date(dateObj) : new Date();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        function formatVNDate(dateStr) {
+            if (!dateStr) return '--';
+            const parts = String(dateStr).split('-');
+            if (parts.length !== 3) return dateStr;
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        function initStudyDashboard() {
+            updateExamCountdown();
+            setInterval(updateExamCountdown, 60 * 60 * 1000);
+            fetchDiaryEntries(false);
+        }
+
+        function updateExamCountdown() {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const target = new Date(EXAM_DATE.getFullYear(), EXAM_DATE.getMonth(), EXAM_DATE.getDate());
+            const daysLeft = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+            const daysNode = document.getElementById('examDaysLeft');
+            const labelNode = document.getElementById('examDaysLabel');
+            const dateLine = document.getElementById('todayDateLine');
+            const progressFill = document.getElementById('examProgressFill');
+            const progressText = document.getElementById('examProgressText');
+
+            if (daysNode) daysNode.textContent = daysLeft >= 0 ? daysLeft : 0;
+            if (labelNode) labelNode.textContent = daysLeft > 0 ? 'ngày nữa tới ngày thi' : (daysLeft === 0 ? 'là ngày thi rồi' : 'ngày thi đã qua');
+            if (dateLine) dateLine.textContent = `Hôm nay: ${formatVNDate(getLocalDateString(today))}`;
+
+            const startPoint = new Date(2026, 6, 8); // mốc làm countdown trong app: 08/07/2026
+            const total = Math.max(1, target - startPoint);
+            const done = Math.min(Math.max(today - startPoint, 0), total);
+            const percent = Math.round((done / total) * 100);
+            if (progressFill) progressFill.style.width = `${percent}%`;
+            if (progressText) progressText.textContent = `Đã đi được khoảng ${percent}% chặng chuẩn bị từ 08/07/2026 tới 12/09/2026.`;
+        }
+
+        function setDiaryDefaultDate() {
+            const dateInput = document.getElementById('diary_date');
+            if (dateInput && !dateInput.value) dateInput.value = getLocalDateString(new Date());
+        }
+
+        function updateDiaryRatingBubble() {
+            const rating = document.getElementById('diary_rating')?.value || '7';
+            const bubble = document.getElementById('diaryRatingBubble');
+            if (bubble) bubble.textContent = `${rating}/10`;
+        }
+
+        function getDiaryFormData() {
+            return {
+                date_done: document.getElementById('diary_date').value || getLocalDateString(new Date()),
+                source_link: 'DIARY',
+                question_type: 'DIARY',
+                question_text: document.getElementById('diary_freewrite').value,
+                image_url: null,
+                option_a: document.getElementById('diary_achievement').value,
+                option_b: document.getElementById('diary_study_done').value,
+                option_c: document.getElementById('diary_happy').value,
+                option_d: document.getElementById('diary_hard').value,
+                wrong_answer: document.getElementById('diary_mood').value,
+                why_i_chose_wrong: '',
+                why_wrong: document.getElementById('diary_tomorrow').value,
+                correct_answer: String(document.getElementById('diary_rating').value || '7'),
+                why_correct: document.getElementById('diary_gratitude').value,
+                takeaway: document.getElementById('diary_lesson').value,
+                review_status: 'DIARY'
+            };
+        }
+
+        function clearDiaryFormKeepDate() {
+            const today = document.getElementById('diary_date')?.value || getLocalDateString(new Date());
+            document.getElementById('diaryForm').reset();
+            document.getElementById('diary_date').value = today;
+            document.getElementById('diary_rating').value = 7;
+            updateDiaryRatingBubble();
+        }
+
+        async function fetchDiaryEntries(showLoading) {
+            const list = document.getElementById('diaryHistoryList');
+            if (showLoading && list) list.innerHTML = '<div class="diary-empty">Đang tải diary...</div>';
+
+            const { data, error } = await supabaseClient.from('logs')
+                .select('*')
+                .eq('question_type', 'DIARY')
+                .order('date_done', { ascending: false })
+                .limit(80);
+
+            if (error) {
+                if (list) list.innerHTML = `<div class="diary-empty" style="color:#dc3545;">Lỗi tải diary: ${escapeHTML(error.message)}</div>`;
+                return;
+            }
+
+            globalDiaryData = data || [];
+            renderDiaryHistory(globalDiaryData);
+            updateDiaryDashboard(globalDiaryData);
+        }
+
+        function updateDiaryDashboard(entries) {
+            const totalNode = document.getElementById('diaryTotalDays');
+            const avgNode = document.getElementById('diaryAverageRating');
+            const moodNode = document.getElementById('diaryLatestMood');
+            const todayRating = document.getElementById('todayDiaryRating');
+            const todayMini = document.getElementById('todayDiaryMini');
+            const panelTotal = document.getElementById('diaryPanelTotal');
+            const panelAvg = document.getElementById('diaryPanelAvg');
+            const panelBest = document.getElementById('diaryPanelBest');
+
+            const safeEntries = entries || [];
+            const uniqueDays = new Set(safeEntries.map(x => x.date_done).filter(Boolean));
+            const ratings = safeEntries.map(x => parseFloat(x.correct_answer)).filter(x => !isNaN(x));
+            const avg = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length) : null;
+            const latest = safeEntries[0];
+            const todayStr = getLocalDateString(new Date());
+            const todayEntry = safeEntries.find(x => x.date_done === todayStr);
+            const best = safeEntries.reduce((bestEntry, cur) => {
+                const curRating = parseFloat(cur.correct_answer);
+                const bestRating = bestEntry ? parseFloat(bestEntry.correct_answer) : -1;
+                return !isNaN(curRating) && curRating > bestRating ? cur : bestEntry;
+            }, null);
+
+            if (totalNode) totalNode.textContent = uniqueDays.size;
+            if (avgNode) avgNode.textContent = `Rating trung bình: ${avg === null ? '--' : avg.toFixed(1)}/10`;
+            if (moodNode) moodNode.textContent = `Mood gần nhất: ${latest ? latest.wrong_answer || '--' : '--'}`;
+            if (panelTotal) panelTotal.textContent = safeEntries.length;
+            if (panelAvg) panelAvg.textContent = avg === null ? '--' : avg.toFixed(1);
+            if (panelBest) panelBest.textContent = best ? `${best.correct_answer}/10` : '--';
+
+            if (todayEntry) {
+                if (todayRating) todayRating.textContent = `${todayEntry.correct_answer || '--'}/10`;
+                const bits = [];
+                if (todayEntry.wrong_answer) bits.push(todayEntry.wrong_answer);
+                if (todayEntry.option_a) bits.push(`Thành tựu: ${todayEntry.option_a}`);
+                if (todayEntry.option_b) bits.push(`Đã học: ${todayEntry.option_b}`);
+                if (todayMini) todayMini.textContent = bits.join(' · ') || 'Đã ghi diary hôm nay.';
+            } else {
+                if (todayRating) todayRating.textContent = 'Chưa có diary';
+                if (todayMini) todayMini.textContent = 'Viết vài dòng để sau này nhìn lại thấy mình đã đi xa cỡ nào.';
+            }
+        }
+
+        function renderDiaryHistory(entries) {
+            const list = document.getElementById('diaryHistoryList');
+            if (!list) return;
+            if (!entries || !entries.length) {
+                list.innerHTML = '<div class="diary-empty">Chưa có diary nào. Viết entry đầu tiên đi bà 🌸</div>';
+                updateDiaryDashboard([]);
+                return;
+            }
+
+            list.innerHTML = entries.map(entry => {
+                return `<div class="diary-entry">
+                    <div class="diary-entry-head">
+                        <div><span class="diary-entry-date">${formatVNDate(entry.date_done)}</span> <span class="diary-entry-mood">${escapeHTML(entry.wrong_answer || '')}</span></div>
+                        <span class="diary-entry-rating">${escapeHTML(entry.correct_answer || '--')}/10</span>
+                    </div>
+                    ${entry.option_b ? `<div class="diary-entry-section"><strong>Học được:</strong><br>${renderRichText(entry.option_b)}</div>` : ''}
+                    ${entry.option_a ? `<div class="diary-entry-section"><strong>Thành tựu:</strong><br>${renderRichText(entry.option_a)}</div>` : ''}
+                    ${entry.option_c ? `<div class="diary-entry-section"><strong>Vui / biết ơn:</strong><br>${renderRichText(entry.option_c)}</div>` : ''}
+                    ${entry.option_d ? `<div class="diary-entry-section"><strong>Khó / buồn:</strong><br>${renderRichText(entry.option_d)}</div>` : ''}
+                    ${entry.question_text ? `<div class="diary-entry-section"><strong>Nhật ký:</strong><br>${renderRichText(entry.question_text)}</div>` : ''}
+                    ${entry.takeaway ? `<div class="diary-entry-section"><strong>Bài học:</strong><br>${renderRichText(entry.takeaway)}</div>` : ''}
+                    ${entry.why_wrong ? `<div class="diary-entry-section"><strong>Kế hoạch mai:</strong><br>${renderRichText(entry.why_wrong)}</div>` : ''}
+                    ${entry.why_correct ? `<div class="diary-entry-section"><strong>Tự nhắn:</strong><br>${renderRichText(entry.why_correct)}</div>` : ''}
+                </div>`;
+            }).join('');
+        }
+
+        async function saveDiaryEntry(event) {
+            event.preventDefault();
+            const btn = document.getElementById('diarySaveBtn');
+            const msg = document.getElementById('diaryMessage');
+            btn.disabled = true;
+            btn.textContent = 'Đang lưu... ⏳';
+
+            const diaryData = getDiaryFormData();
+            const hasContent = [diaryData.question_text, diaryData.option_a, diaryData.option_b, diaryData.option_c, diaryData.option_d, diaryData.takeaway, diaryData.why_wrong, diaryData.why_correct].some(v => String(v || '').trim());
+            if (!hasContent) {
+                alert('Diary chưa có nội dung nào để lưu á bà.');
+                btn.disabled = false;
+                btn.textContent = 'LƯU DIARY 🌸';
+                return;
+            }
+
+            const { error } = await supabaseClient.from('logs').insert([diaryData]);
+            if (error) {
+                alert('Lỗi lưu diary: ' + error.message);
+            } else {
+                if (msg) {
+                    msg.style.display = 'block';
+                    setTimeout(() => msg.style.display = 'none', 2500);
+                }
+                clearDiaryFormKeepDate();
+                await fetchDiaryEntries(false);
+            }
+            btn.disabled = false;
+            btn.textContent = 'LƯU DIARY 🌸';
+        }
 
         let globalLogsData = []; 
         let myChartInstance = null; 
@@ -911,7 +1273,8 @@ Gặp phân số thì khử mẫu trước rồi mới chuyển vế.`;
         async function fetchLogs() {
             tableBody.innerHTML = '<tr><td colspan="12" style="text-align: center; padding: 30px; font-weight: bold; color: var(--border-pink);">🌸 Đang tải dữ liệu...</td></tr>';
 
-            const { data, error } = await supabaseClient.from('logs').select('*').neq('question_type', 'VOCAB').order('date_done', { ascending: false });
+            const { data: rawData, error } = await supabaseClient.from('logs').select('*').order('date_done', { ascending: false });
+            const data = (rawData || []).filter(log => log.question_type !== 'VOCAB' && log.question_type !== 'DIARY');
 
             if (error) {
                 console.error("Lỗi lấy dữ liệu:", error);
@@ -1143,6 +1506,8 @@ Gặp phân số thì khử mẫu trước rồi mới chuyển vế.`;
             btn.textContent = 'LOG IT! 🌸';
         });
 
+        document.getElementById('diaryForm').addEventListener('submit', saveDiaryEntry);
+
         // Test Tools: highlight nhiều màu/tự chọn, eliminate đáp án, note
         const qTextNode = document.getElementById('quizQuestionText');
         let activeHighlightColor = '#FFF176';
@@ -1280,7 +1645,7 @@ Gặp phân số thì khử mẫu trước rồi mới chuyển vế.`;
             const btn = document.querySelector('.test-setup-card .submit-btn');
             btn.textContent = "Đang soạn đề..."; btn.disabled = true;
 
-            let query = supabaseClient.from('logs').select('*').neq('question_type', 'VOCAB'); 
+            let query = supabaseClient.from('logs').select('*');
             if (status !== 'ALL') query = query.eq('review_status', status); 
 
             const { data, error } = await query;
@@ -1289,6 +1654,7 @@ Gặp phân số thì khử mẫu trước rồi mới chuyển vế.`;
             if (error || !data || data.length === 0) { alert("Sập hầm! Kho hông có câu nào thỏa mãn điều kiện lọc."); return; }
 
             const filteredData = data.filter(item => {
+                if (item.question_type === 'VOCAB' || item.question_type === 'DIARY') return false;
                 const parts = getTypeParts(item.question_type);
                 const subjectMatch = subject === 'ALL' || parts.subject === subject;
                 const categoryMatch = category === 'ALL' || parts.category === category;
