@@ -113,6 +113,8 @@
         .option-image-grid input { padding: 8px; font-size: 0.78em; }
         .inline-option-img { display: block; max-width: 100%; max-height: 230px; object-fit: contain; margin-top: 8px; border: 1px solid #ddd; border-radius: 8px; background: white; }
         .mini-help { font-size: 0.82em; color: #777; margin-top: 6px; line-height: 1.4; }
+        .auto-date-display { width: 100%; border: 1px solid var(--header-pink); background: #FFF9FC; color: var(--border-pink); border-radius: 10px; padding: 12px 14px; font-weight: 900; display: flex; align-items: center; min-height: 48px; }
+        .auto-date-group .mini-help { margin-top: 6px; }
         .desmos-input-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
         .desmos-embed-box { width: 100%; margin-top: 12px; border: 1px solid #D8E2F3; border-radius: 12px; overflow: hidden; background: white; }
         .desmos-embed-title { padding: 8px 12px; font-weight: 800; color: var(--bluebook-blue); border-bottom: 1px solid #D8E2F3; background: #F7FAFF; display: flex; justify-content: space-between; gap: 8px; align-items: center; }
@@ -320,7 +322,12 @@
 
             <div class="form-section">
                 <h3>Question Details</h3>
-                <div class="form-group"><label>Date</label> <input type="date" id="date_done" required></div>
+                <div class="form-group auto-date-group">
+                    <label>Ngày lỗi sai (tự động)</label>
+                    <div class="auto-date-display" id="autoLogDateDisplay">Hôm nay</div>
+                    <input type="hidden" id="date_done" required>
+                    <div class="mini-help">Không cần chọn ngày nữa: bấm LOG IT ngày nào thì lỗi sai lưu đúng ngày đó.</div>
+                </div>
                 <div class="form-group"><label>Source/Link</label> <input type="text" id="source_link" placeholder="e.g., PT 1"></div>
                 <div class="form-group">
                     <label>Môn / Section</label>
@@ -1022,6 +1029,7 @@ Gặp phân số thì khử mẫu trước rồi mới chuyển vế.`;
             if (mode === 'log') {
                 document.getElementById('btnLogMode').classList.add('active'); 
                 document.getElementById('logSection').classList.add('active'); 
+                setLogDefaultDate();
                 fetchLogs();
             } else if (mode === 'test') {
                 document.getElementById('btnTestMode').classList.add('active'); 
@@ -1046,6 +1054,7 @@ Gặp phân số thì khử mẫu trước rồi mới chuyển vế.`;
             updateTableCategoryOptions();
             updateTestCategoryOptions();
             initStudyDashboard();
+            setLogDefaultDate();
             setDiaryDefaultDate();
             updateDiaryRatingBubble();
         });
@@ -1100,6 +1109,14 @@ Gặp phân số thì khử mẫu trước rồi mới chuyển vế.`;
             const percent = Math.round((done / total) * 100);
             if (progressFill) progressFill.style.width = `${percent}%`;
             if (progressText) progressText.textContent = `Đã đi được khoảng ${percent}% chặng chuẩn bị từ 08/07/2026 tới 12/09/2026.`;
+        }
+
+        function setLogDefaultDate() {
+            const today = getLocalDateString(new Date());
+            const dateInput = document.getElementById('date_done');
+            if (dateInput) dateInput.value = today;
+            const display = document.getElementById('autoLogDateDisplay');
+            if (display) display.textContent = `Hôm nay • ${formatVNDate(today)}`;
         }
 
         function setDiaryDefaultDate() {
@@ -1463,13 +1480,15 @@ Gặp phân số thì khử mẫu trước rồi mới chuyển vế.`;
 
             try {
                 syncQuestionTypeField();
+                setLogDefaultDate();
+                const autoLogDate = getLocalDateString(new Date());
 
                 let uploadedImageUrl = null;
                 const questionFile = document.getElementById('question_image').files[0];
                 if (questionFile) uploadedImageUrl = await uploadImageFile(questionFile, 'question');
 
                 const logData = {
-                    date_done: document.getElementById('date_done').value, 
+                    date_done: autoLogDate, 
                     source_link: document.getElementById('source_link').value,
                     question_type: document.getElementById('question_type').value, 
                     question_text: buildQuestionTextForSave(),
@@ -1492,6 +1511,7 @@ Gặp phân số thì khử mẫu trước rồi mới chuyển vế.`;
                 if (!error) {
                     document.getElementById('logForm').reset();
                     updateQuestionCategoryOptions();
+                    setLogDefaultDate();
                     document.getElementById('successMessage').style.display = 'block';
                     setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000); 
                     fetchLogs();
